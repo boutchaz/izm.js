@@ -23,8 +23,10 @@ exports.renderIndex = (req, res) => {
  * @param {Function} next Go to the next middleware
  */
 exports.renderServerError = (req, res) => {
+  req.i18n.setDefaultNamespace('vendor:core');
   res.status(500).render(`${vendor}/core/views/500`, {
-    error: 'Oops! Something went wrong...',
+    title: req.t('ERROR_500_TITLE'),
+    error: req.t('ERROR_500'),
   });
 };
 
@@ -36,19 +38,23 @@ exports.renderServerError = (req, res) => {
  * @param {Function} next Go to the next middleware
  */
 exports.renderNotFound = (req, res) => {
+  req.i18n.setDefaultNamespace('vendor:core');
   res.status(404).format({
     'text/html': () => {
       res.render(`${vendor}/core/views/404`, {
-        url: req.originalUrl,
+        title: req.t('PAGE_NOT_FOUND_TITLE'),
+        details: req.t('PAGE_NOT_FOUND_DETAILS', {
+          url: req.originalUrl,
+        }),
       });
     },
     'application/json': () => {
       res.json({
-        error: 'Path not found',
+        error: req.t('ERROR_404'),
       });
     },
     default() {
-      res.send('Path not found');
+      res.send(req.t('ERROR_404'));
     },
   });
 };

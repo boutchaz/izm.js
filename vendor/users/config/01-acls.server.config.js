@@ -12,7 +12,7 @@ const config = require(resolve('config'));
  */
 module.exports = (app) => {
   // eslint-disable-next-line
-  const regex = /^[a-zA-Z0-9]*\/([^\/]*)/;
+  const regex = /^([a-zA-Z0-9]*)\/([^\/]*)/;
   const iam = new Iam();
 
   app.use(async (req, res, next) => {
@@ -70,7 +70,7 @@ module.exports = (app) => {
     // Detect the namespace
     r.use((req, res, next) => {
       if (exec) {
-        req.i18n.setDefaultNamespace(exec[1]);
+        req.i18n.setDefaultNamespace(`${exec[1]}:${exec[2]}`);
       }
 
       next();

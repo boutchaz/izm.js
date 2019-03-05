@@ -21,6 +21,8 @@ const Backend = require('i18next-node-fs-backend');
 const fs = require('fs');
 const nunjucks = require('nunjucks');
 
+const { vendor, custom } = config.files.server.modules;
+
 /**
  * Initialize local variables
  */
@@ -194,25 +196,30 @@ module.exports.initI18n = (app) => {
     config.i18next.detector,
   );
 
-  const getDirsNames = source => fs
-    .readdirSync(source)
-    .map((name) => {
-      const p = path.join(source, name);
+  const getDirsNames = () => {
+    const modules = [vendor, ...custom];
+    const names = modules.map(source => fs
+      .readdirSync(source)
+      .map((name) => {
+        const p = path.join(source, name);
 
-      if (!fs.lstatSync(p).isDirectory()) {
-        return false;
-      }
+        if (!fs.lstatSync(p).isDirectory()) {
+          return false;
+        }
 
-      return name;
-    })
-    .filter(Boolean);
+        return `${source}:${name}`;
+      })
+      .filter(Boolean));
+
+    return Array.prototype.concat.apply([], names);
+  };
 
   i18next
     .use(Backend)
     .use(lngDetector)
     .init({
       ...config.i18next.init,
-      ns: getDirsNames(path.resolve('modules')),
+      ns: getDirsNames(),
     });
 
   app.use(i18nextMiddleware.handle(i18next));
@@ -232,7 +239,9 @@ module.exports.initErrorRoutes = (app) => {
     console.error(err.stack);
 
     // Redirect to error page
-    return res.redirect('/server-error');
+    return res.status(500).render(`${vendor}/core/views/500`, {
+      error: req.t('ERRORS_500'),
+    });
   });
 };
 
