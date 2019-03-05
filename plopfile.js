@@ -17,7 +17,7 @@ module.exports = (plop) => {
       {
         type: 'addMany',
         templateFiles: 'plop/module/**/*.(js|json|swig)',
-        destination: 'modules/{{name}}',
+        destination: 'custom/{{name}}',
         skipIfExists: true,
         base: 'plop/module',
       },

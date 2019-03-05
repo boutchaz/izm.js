@@ -1,4 +1,8 @@
+const { resolve } = require('path');
 
+// eslint-disable-next-line import/no-dynamic-require
+const config = require(resolve('config'));
+const { vendor } = config.files.server.modules;
 
 /**
  * Render the main application page
@@ -7,7 +11,7 @@
  * @param {Function} next Go to the next middleware
  */
 exports.renderIndex = (req, res) => {
-  res.render('modules/core/views/index', {
+  res.render(`${vendor}/core/views/index`, {
     user: req.user ? req.user.toJSON({ virtuals: true }) : null,
   });
 };
@@ -19,7 +23,7 @@ exports.renderIndex = (req, res) => {
  * @param {Function} next Go to the next middleware
  */
 exports.renderServerError = (req, res) => {
-  res.status(500).render('modules/core/views/500', {
+  res.status(500).render(`${vendor}/core/views/500`, {
     error: 'Oops! Something went wrong...',
   });
 };
@@ -34,7 +38,7 @@ exports.renderServerError = (req, res) => {
 exports.renderNotFound = (req, res) => {
   res.status(404).format({
     'text/html': () => {
-      res.render('modules/core/views/404', {
+      res.render(`${vendor}/core/views/404`, {
         url: req.originalUrl,
       });
     },

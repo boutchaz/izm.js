@@ -1,6 +1,5 @@
 # dependencies
 /node_modules
-/modules/signature/node_modules
 
 # IDEs and editors
 /.idea
@@ -14,6 +13,7 @@
 /db/*
 /.env/*
 /lib/*
+/modules/*
 .DS_Store
 
 # Logs

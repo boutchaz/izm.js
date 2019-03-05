@@ -7,8 +7,11 @@ const _ = require('lodash');
 const { resolve } = require('path');
 const mongoose = require('mongoose');
 
-const errorHandler = require(resolve('./modules/core/controllers/errors.server.controller'));
 const config = require(resolve('./config'));
+
+const { vendor } = config.files.server.modules;
+
+const errorHandler = require(resolve(`./${vendor}/core/controllers/errors.server.controller`));
 const validationModule = require(resolve('./config/validations'));
 const User = mongoose.model('User');
 
@@ -191,7 +194,7 @@ exports.confirm = async (req, res) => {
 
   return res.format({
     'text/html': () => {
-      res.render('modules/users/views/email-confirmed', {
+      res.render(`${vendor}/users/views/email-confirmed`, {
         app: {
           name: config.app.title,
           url: baseURL,

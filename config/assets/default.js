@@ -1,16 +1,37 @@
+const folders = ['vendor', 'modules'];
+const [vendor, ...custom] = folders;
+
 module.exports = {
+  modules: {
+    vendor,
+    custom,
+  },
   server: {
     models: [
-      'modules/users/models/**/*.js',
-      'modules/!(users)/models/**/*.js',
+      `${vendor}/users/models/**/*.js`,
+      `${vendor}/!(users)/models/**/*.js`,
+      ...custom.map(m => `${m}/*/models/**/*.js`),
     ],
     routes: [
-      'modules/!(core)/routes/**/*.js',
-      'modules/core/routes/**/*.js',
+      `${vendor}/!(core)/routes/**/*.js`,
+      ...custom.map(m => `${m}/*/routes/**/*.js`),
+      `${vendor}/core/routes/**/*.js`,
     ],
-    config: 'modules/*/config/*.js',
-    iam: ['modules/*/iam/*.js'],
-    bootstraps: 'modules/*/bootstraps/*.js',
-    appConfig: 'modules/*/app.config.js',
+    config: [
+      `${vendor}/*/config/*.js`,
+      ...custom.map(m => `${m}/*/config/*.js`),
+    ],
+    iam: [
+      `${vendor}/*/iam/*.js`,
+      ...custom.map(m => `${m}/*/iam/*.js`),
+    ],
+    bootstraps: [
+      `${vendor}/*/bootstrap/*.js`,
+      ...custom.map(m => `${m}/*/bootstrap/*.js`),
+    ],
+    appConfig: [
+      `${vendor}/*/app.config.js`,
+      ...custom.map(m => `${m}/*/app.config.js`),
+    ],
   },
 };
