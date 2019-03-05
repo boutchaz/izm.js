@@ -1,0 +1,8 @@
+{
+    "prettier.eslintIntegration": true,
+    "eslint.autoFixOnSave": true,
+    "files.eol": "\n",
+    "files.associations": {
+      "modules/*/iam/**/*.iam.js": "iam"
+    }
+  }

@@ -1,0 +1,32 @@
+{
+    "Add controller documentation": {
+      "scope": "javascript",
+      "prefix": "doc:ctrl",
+      "body": [
+        "/**",
+        " * $1",
+        " * @param {IncommingMessage} req The request",
+        " * @param {OutcommingMessage} res The response",
+        " * @param {Function} next Go to the next middleware",
+        " */"
+      ],
+      "description": "Initialize the IAM file"
+    },
+    "Create new controller": {
+      "scope": "javascript",
+      "prefix": "ctrl",
+      "body": [
+        "/**",
+        " * $1",
+        " * @param {IncommingMessage} req The request",
+        " * @param {OutcommingMessage} res The response",
+        " * @param {Function} next Go to the next middleware",
+        " */",
+        "exports.$2 = async (req, res, next) => {",
+        "\t$3",
+        "};"
+      ],
+      "description": "Add method to an existing route"
+    }
+  }
+  
