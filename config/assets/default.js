@@ -26,8 +26,8 @@ module.exports = {
       ...custom.map(m => `${m}/*/iam/*.js`),
     ],
     bootstraps: [
-      `${vendor}/*/bootstrap/*.js`,
-      ...custom.map(m => `${m}/*/bootstrap/*.js`),
+      `${vendor}/*/bootstraps/*.js`,
+      ...custom.map(m => `${m}/*/bootstraps/*.js`),
     ],
     appConfig: [
       `${vendor}/*/app.config.js`,
