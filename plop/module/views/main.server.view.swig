@@ -1,4 +1,4 @@
-{% extends "../../core/views/layout.server.view.swig" %}
+{% extends "vendor/core/views/layout.server.view.swig" %}
 
 {% block content %}
 <style>

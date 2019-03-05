@@ -1,4 +1,8 @@
+const { resolve } = require('path');
 
+// eslint-disable-next-line import/no-dynamic-require
+const config = require(resolve('config'));
+const { vendor } = config.files.server.modules;
 
 /**
  * Render the main application page
@@ -7,7 +11,7 @@
  * @param {Function} next Go to the next middleware
  */
 exports.renderIndex = (req, res) => {
-  res.render('modules/core/views/index', {
+  res.render(`${vendor}/core/views/index`, {
     user: req.user ? req.user.toJSON({ virtuals: true }) : null,
   });
 };
@@ -19,8 +23,10 @@ exports.renderIndex = (req, res) => {
  * @param {Function} next Go to the next middleware
  */
 exports.renderServerError = (req, res) => {
-  res.status(500).render('modules/core/views/500', {
-    error: 'Oops! Something went wrong...',
+  req.i18n.setDefaultNamespace('vendor:core');
+  res.status(500).render(`${vendor}/core/views/500`, {
+    title: req.t('ERROR_500_TITLE'),
+    error: req.t('ERROR_500'),
   });
 };
 
@@ -32,19 +38,23 @@ exports.renderServerError = (req, res) => {
  * @param {Function} next Go to the next middleware
  */
 exports.renderNotFound = (req, res) => {
+  req.i18n.setDefaultNamespace('vendor:core');
   res.status(404).format({
     'text/html': () => {
-      res.render('modules/core/views/404', {
-        url: req.originalUrl,
+      res.render(`${vendor}/core/views/404`, {
+        title: req.t('PAGE_NOT_FOUND_TITLE'),
+        details: req.t('PAGE_NOT_FOUND_DETAILS', {
+          url: req.originalUrl,
+        }),
       });
     },
     'application/json': () => {
       res.json({
-        error: 'Path not found',
+        error: req.t('ERROR_404'),
       });
     },
     default() {
-      res.send('Path not found');
+      res.send(req.t('ERROR_404'));
     },
   });
 };

@@ -1,4 +1,4 @@
-{% extends '../../../modules/core/views/email.server.view.swig' %}
+{% extends '../../../vendor/core/views/email.server.view.swig' %}
 
 {% block content %}
 <!-- ONE COLUMN SECTION -->

@@ -3,12 +3,15 @@
 /**
  * Module dependencies.
  */
-const path = require('path');
+const { resolve } = require('path');
 const mongoose = require('mongoose');
 
-const config = require(path.resolve('./config'));
+const config = require(resolve('./config'));
 const User = mongoose.model('User');
-const errorHandler = require(path.resolve('./modules/core/controllers/errors.server.controller'));
+
+const { vendor } = config.files.server.modules;
+
+const errorHandler = require(resolve(`./${vendor}/core/controllers/errors.server.controller`));
 
 /**
  * Read a single user infos

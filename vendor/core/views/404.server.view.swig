@@ -1,10 +1,9 @@
 {% extends './layout.server.view.swig' %}
 
 {% block content %}
-<h1>Page Not Found</h1>
+<h1>{{ title }}</h1>
 <div class="alert alert-danger" role="alert">
   <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-  <span class="sr-only">Error:</span>
-  {{url}} is not a valid path.
+  {{ details | safe }}
 </div>
 {% endblock %}
