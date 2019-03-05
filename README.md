@@ -17,7 +17,7 @@ cp .example.env .env/.development.env
 yarn start
 ```
 
-Edit the `.env` file to set the correct env variables.
+Edit the `.env` file to set the correct environment variables.
 
 ## Useful Commands
 
@@ -50,3 +50,13 @@ ctrl
 
 Create new controller.
 
+## Auto depmloyment
+
+You need to define these environment variables in your repository:
+
+  * `PRODUCTION_URL`: [The production URL](https://docs.gitlab.com/ee/ci/environments.html#making-use-of-the-environment-url)
+  * `PRODUCTION_DEPLOY_SERVER`: List of production servers addresses or IP addresses. Should be separated by `,`.
+  * `PRODUCTION_SSH_PRIVATE_KEY`: The SSH key to use to connect to production servers.
+  * `STAGING_URL`: [The staging URL](https://docs.gitlab.com/ee/ci/environments.html#making-use-of-the-environment-url)
+  * `STAGING_DEPLOY_SERVER`: List of staging servers addresses or IP addresses. Should be separated by `,`.
+  * `STAGING_SSH_PRIVATE_KEY`: The SSH key to use to connect to staging servers.
