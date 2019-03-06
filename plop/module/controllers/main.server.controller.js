@@ -2,7 +2,7 @@ const { resolve } = require('path');
 
 /**
  * Check if the module "{{name}}" is up and running
- * @controller Check
+ * @controller Check "{{name}}" module
  * @param {IncommingMessage} req The request
  * @param {OutcommingMessage} res The response
  */
