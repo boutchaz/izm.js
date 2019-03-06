@@ -5,6 +5,7 @@
       "body": [
         "/**",
         " * $1",
+        " * @controller $2",
         " * @param {IncommingMessage} req The request",
         " * @param {OutcommingMessage} res The response",
         " * @param {Function} next Go to the next middleware",
@@ -18,12 +19,13 @@
       "body": [
         "/**",
         " * $1",
+        " * @controller $2",
         " * @param {IncommingMessage} req The request",
         " * @param {OutcommingMessage} res The response",
         " * @param {Function} next Go to the next middleware",
         " */",
-        "exports.$2 = async (req, res, next) => {",
-        "\t$3",
+        "exports.$3 = async (req, res, next) => {",
+        "\t$4",
         "};"
       ],
       "description": "Add method to an existing route"
