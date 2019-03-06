@@ -12,6 +12,7 @@ const guest = [
   'users:auth:code:confirm',
   'users:auth:code:resend',
   'users:auth:name',
+  'controllers:list',
 ];
 
 /**

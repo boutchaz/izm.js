@@ -1,7 +1,8 @@
 const { resolve } = require('path');
 
 /**
- * Test if the module todo is up and running
+ * Check if the module "{{name}}" is up and running
+ * @controller Check
  * @param {IncommingMessage} req The request
  * @param {OutcommingMessage} res The response
  */
