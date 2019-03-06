@@ -1,18 +1,18 @@
 const chalk = require('chalk');
-const path = require('path');
+const { resolve } = require('path');
 const express = require('express');
 
 const Iam = require('../helpers/iam.server.helper');
 
 // eslint-disable-next-line import/no-dynamic-require
-const config = require(path.resolve('config'));
+const config = require(resolve('config'));
 
 /**
  * Configure the modules server routes
  */
 module.exports = (app) => {
   // eslint-disable-next-line
-  const regex = /^modules\/([^\/]*)/;
+  const regex = /^([a-zA-Z0-9]*)\/([^\/]*)/;
   const iam = new Iam();
 
   app.use(async (req, res, next) => {
@@ -63,14 +63,14 @@ module.exports = (app) => {
   // Globbing routing files
   config.files.server.iam.forEach((routePath) => {
     // eslint-disable-next-line
-    const m = require(path.resolve(routePath));
+    const m = require(resolve(routePath));
     const r = express.Router();
     const exec = regex.exec(routePath);
 
     // Detect the namespace
     r.use((req, res, next) => {
       if (exec) {
-        req.i18n.setDefaultNamespace(exec[1]);
+        req.i18n.setDefaultNamespace(`${exec[1]}:${exec[2]}`);
       }
 
       next();

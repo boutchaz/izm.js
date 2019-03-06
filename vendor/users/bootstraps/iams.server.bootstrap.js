@@ -15,7 +15,7 @@ async function seedIAMs() {
   debug('seeding IAMs');
   const iam = new Iam();
   // eslint-disable-next-line no-useless-escape
-  const regex = /^modules\/([^\/]*)/;
+  const regex = /^[a-zA-Z0-9]*\/([^\/]*)/;
 
   const all$ = config.files.server.iam.map(async (iamFilePath) => {
     // eslint-disable-next-line

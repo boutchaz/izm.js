@@ -19,5 +19,5 @@ dotenv.config({
  */
 [
   'helpers',
-  'modules',
+  'vendor',
 ].map(m => appModulePath.addPath(m));

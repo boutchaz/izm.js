@@ -1,4 +1,4 @@
-const path = require('path');
+const { resolve } = require('path');
 
 module.exports = {
   log: {
@@ -64,12 +64,18 @@ module.exports = {
       fallbackLng: 'fr',
       preload: ['fr', 'en'],
       saveMissing: true,
-      fallbackNS: 'core',
-      defaultNS: 'core',
+      fallbackNS: 'vendor:core',
+      defaultNS: 'vendor:core',
       debug: false,
       backend: {
-        loadPath: path.resolve('modules/{{ns}}/i18n/{{lng}}.json'),
-        addPath: path.resolve('modules/{{ns}}/i18n/{{lng}}.missing.json'),
+        loadPath: (lng, ns) => {
+          const [type, name] = ns.split(':');
+          return resolve(`${type}/${name}/i18n/${lng}.json`);
+        },
+        addPath: (lng, ns) => {
+          const [type, name] = ns.split(':');
+          return resolve(`${type}/${name}/i18n/${lng}.missing.json`);
+        },
       },
     },
   },

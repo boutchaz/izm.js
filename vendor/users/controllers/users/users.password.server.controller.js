@@ -3,13 +3,15 @@
 /**
  * Module dependencies.
  */
-const path = require('path');
+const { resolve } = require('path');
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 const { promisify } = require('util');
 
-const config = require(path.resolve('./config'));
+const config = require(resolve('./config'));
 const User = mongoose.model('User');
+
+const { vendor } = config.files.server.modules;
 
 /**
  * Forgot for reset password (forgot POST)
@@ -68,7 +70,7 @@ exports.forgot = async (req, res, next) => {
   const httpTransport = `http${config.secure && config.secure.ssl === true ? 's' : ''}://`;
 
   try {
-    const html = await render.bind(res)(path.resolve('modules/users/views/reset-password-email'), {
+    const html = await render.bind(res)(resolve(`${vendor}/users/views/reset-password-email`), {
       name: user.name.full,
       appName: config.app.title,
       url: `${httpTransport + req.headers.host + config.prefix}/auth/reset/${token}`,
@@ -161,7 +163,7 @@ exports.reset = async (req, res, next) => {
     }));
   });
 
-  return res.render('modules/users/templates/reset-password-confirm-email', {
+  return res.render(`${vendor}/users/templates/reset-password-confirm-email`, {
     name: user.name.full,
     appName: config.app.title,
   }, (err, emailHTML) => {

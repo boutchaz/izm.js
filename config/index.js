@@ -119,10 +119,13 @@ function validateSessionSecret(config, testing) {
  * Initialize global configuration files
  */
 function initGlobalConfigFiles(config, assets) {
+  const { modules } = assets;
+
   // Appending files
   _.merge(config, {
     files: {
       server: {
+        modules,
         // Setting Globbed model files
         models: getGlobbedPaths(assets.server.models),
 
