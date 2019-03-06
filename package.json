@@ -16,7 +16,8 @@
     "release:minor": "release-it minor",
     "release:patch": "release-it patch",
     "webdash": "webdash serve",
-    "generate:module": "plop module"
+    "generate:module": "plop module",
+    "postinstall": "./scripts/install-dependencies.js"
   },
   "dependencies": {
     "@sendgrid/mail": "^6.3.1",
