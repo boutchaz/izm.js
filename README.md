@@ -60,3 +60,5 @@ You need to define these environment variables in your repository:
   * `STAGING_URL`: [The staging URL](https://docs.gitlab.com/ee/ci/environments.html#making-use-of-the-environment-url)
   * `STAGING_DEPLOY_SERVER`: List of staging servers addresses or IP addresses. Should be separated by `,`.
   * `STAGING_SSH_PRIVATE_KEY`: The SSH key to use to connect to staging servers.
+
+
