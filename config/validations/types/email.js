@@ -39,10 +39,11 @@ exports.notify = (user, validation, req) => {
   const v = validation;
   const tpl = path.resolve(__dirname, '..', 'templates/confirmation-email.swig');
   const baseURL = utils.getBaseURLFromRequest(req);
+  const { _id: userId } = user;
 
   let url = baseURL + config.prefix;
   url += '/auth/confirm?type=email';
-  url += `&uid=${user._id}`;
+  url += `&uid=${userId}`;
   url += `&code=${validation.code}`;
 
 

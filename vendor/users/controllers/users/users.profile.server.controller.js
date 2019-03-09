@@ -63,15 +63,18 @@ exports.getProfilePicture = (req, res) => {
  * @param {Function} next Go to the next middleware
  */
 exports.uploadProfilePicture = async (req, res, next) => {
-  const f = req.file.file;
   const Grid = mongoose.model('Grid');
+  const { file, user } = req;
+  const { file: f } = file;
+  const { _id: userId } = user;
+  const { _id: fId } = f;
 
   try {
     let gridFile = await Grid.findOne({
-      _id: f._id,
+      _id: fId,
     });
     gridFile.set('metadata', {
-      owner: req.user._id,
+      owner: userId,
       type: 'profile',
     });
     gridFile = await gridFile.save();
