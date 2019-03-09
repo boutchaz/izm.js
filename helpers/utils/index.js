@@ -1,9 +1,14 @@
 // eslint-disable-next-line import/no-unresolved, import/no-extraneous-dependencies
 const _ = require('lodash');
 const Ajv = require('ajv');
-const mongoose = require('mongoose');
+const { model } = require('mongoose');
+const debug = require('debug')('boilerplate:helpers:utils');
 
-const IAM = mongoose.model('IAM');
+const IAM = model('IAM');
+const User = model('User');
+const Role = model('Role');
+
+const roleCache = {};
 
 exports.changePosition = (arr, old_index, new_index) => {
   let new_arr = [];
@@ -146,4 +151,53 @@ exports.exec = (withpagination = false) => async (req, res, next) => {
     }
   }
   return res.status(200).json(result);
+};
+
+/**
+ * Create a new user that has a specific list of IAMs
+ * @param {Object} credentials An object containing the username and the password
+ * @param {Array} iams An array of IAM keys to affect to the current user
+ * @param {String} name The name of the group to generate
+ */
+exports.createUser = async (
+  credentials = {
+    username: 'username',
+    password: 'jsI$Aw3$0m3',
+  },
+  iams = ['users:auth:signin'],
+  name = 'Role-tests') => {
+  const list = await IAM.find({
+    iam: {
+      $in: iams,
+    },
+  });
+  if (roleCache[name]) {
+    await roleCache[name].remove();
+  }
+  try {
+    roleCache[name] = await new Role({
+      name,
+      iams: list,
+    }).save();
+  } catch (e) {
+    debug(e);
+  }
+
+  const user = await new User({
+    name: {
+      first: 'Full',
+      last: 'Name',
+    },
+    email: `${credentials.username}@example.com`,
+    username: credentials.username,
+    password: credentials.password,
+    provider: 'local',
+    roles: [name],
+    validations: [{
+      type: 'email',
+      validated: true,
+    }],
+  }).save();
+
+  return user;
 };

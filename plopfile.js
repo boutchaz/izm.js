@@ -16,10 +16,13 @@ module.exports = (plop) => {
     actions: [
       {
         type: 'addMany',
-        templateFiles: 'plop/module/**/*.(js|json|swig)',
+        templateFiles: 'plop/module/**/?*.(js|json|swig)',
         destination: 'modules/{{name}}',
         skipIfExists: true,
         base: 'plop/module',
+        globOptions: {
+          dot: true,
+        },
       },
     ],
   });

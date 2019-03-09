@@ -20,7 +20,7 @@ let agent;
 let credentials;
 let credentialsEmail;
 let user;
-let _user;
+let userTmp;
 
 /**
  * User routes tests
@@ -46,7 +46,7 @@ describe('User CRUD tests', () => {
     };
 
     // Create a new user
-    _user = {
+    userTmp = {
       name: {
         first: 'Full',
         last: 'Name',
@@ -64,23 +64,23 @@ describe('User CRUD tests', () => {
       ],
     };
 
-    user = new User(_user);
+    user = new User(userTmp);
 
     // Save a user to the test db
     await user.save();
   });
 
   it('should be able to register a new user', async () => {
-    _user.username = 'register_new_user';
-    _user.email = 'register_new_user_@test.com';
+    userTmp.username = 'register_new_user';
+    userTmp.email = 'register_new_user_@test.com';
 
     const result = await agent
       .post('/api/v1/auth/signup')
-      .send(_user)
+      .send(userTmp)
       .expect(200);
 
-    result.body.username.should.equal(_user.username);
-    result.body.email.should.equal(_user.email);
+    result.body.username.should.equal(userTmp.username);
+    result.body.email.should.equal(userTmp.email);
     // Assert a proper profile image has been set, even if by default
     result.body.profilePictureUrl.should.not.be.empty();
     // Assert we have just the default 'user' role
@@ -104,7 +104,7 @@ describe('User CRUD tests', () => {
         uid: user.id,
         code: user.validations[0].code,
       })
-      .send(_user)
+      .send(userTmp)
       .expect(200);
 
     resp.body.ok.should.equal(true);
@@ -163,6 +163,7 @@ describe('User CRUD tests', () => {
   });
 
   it('should be able to get a single user details if admin', async () => {
+    const { _id: id } = user;
     user.roles = ['user', 'admin'];
 
     await user.save();
@@ -170,10 +171,12 @@ describe('User CRUD tests', () => {
       .post('/api/v1/auth/signin')
       .send(credentials)
       .expect(200);
-    const userInfoRes = await agent.get(`/api/v1/users/${user._id}`).expect(200);
+    const { body } = await agent.get(`/api/v1/users/${id}`).expect(200);
 
-    userInfoRes.body.should.be.instanceof(Object);
-    userInfoRes.body._id.should.be.equal(String(user._id));
+    body.should.be.instanceof(Object);
+
+    const { _id: bId } = body;
+    bId.should.be.equal(String(id));
   });
 
   it('should be able to update a single user details if admin', async () => {
@@ -193,15 +196,20 @@ describe('User CRUD tests', () => {
       roles: ['admin'],
     };
 
-    const userInfoRes = await agent
+    const { body } = await agent
       .put(`/api/v1/users/${user.id}`)
       .send(userUpdate)
       .expect(200);
-    userInfoRes.body.should.be.instanceof(Object);
-    userInfoRes.body.name.first.should.be.equal('admin_update_first');
-    userInfoRes.body.name.last.should.be.equal('admin_update_last');
-    userInfoRes.body.roles.should.be.instanceof(Array).and.have.lengthOf(1);
-    userInfoRes.body._id.should.be.equal(String(user._id));
+
+    body.should.be.instanceof(Object);
+
+    const { _id: bId } = body;
+    const { _id: uId } = user;
+
+    body.name.first.should.be.equal('admin_update_first');
+    body.name.last.should.be.equal('admin_update_last');
+    body.roles.should.be.instanceof(Array).and.have.lengthOf(1);
+    bId.should.be.equal(String(uId));
   });
 
   it('should be able to delete a single user if admin', async () => {

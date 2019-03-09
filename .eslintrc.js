@@ -7,6 +7,5 @@ module.exports = {
     'linebreak-style': ['error', 'unix'],
     quotes: [2, 'single'],
     camelcase: 'off',
-    'no-underscore-dangle': 'off',
   },
 };

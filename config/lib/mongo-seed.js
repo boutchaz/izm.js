@@ -68,11 +68,11 @@ async function seed(collection, options) {
 
 function start(seedConfig) {
   return new Promise(((resolve, reject) => {
-    const seedConfig_ = seedConfig || {};
+    const seedConfigTmp = seedConfig || {};
 
-    const options = seedConfig_.options
+    const options = seedConfigTmp.options
       || (config.seedDB ? _.clone(config.seedDB.options, true) : {});
-    const collections = seedConfig_.collections
+    const collections = seedConfigTmp.collections
       || (config.seedDB ? _.clone(config.seedDB.collections, true) : []);
 
     if (!collections.length) {

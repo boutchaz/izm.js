@@ -1,0 +1,13 @@
+{
+  "name": "{{name}}",
+  "version": "0.1.0",
+  "description": "The {{name}} module",
+  "keywords": [
+    "PS",
+    "module",
+    "wakanda",
+    "functional",
+    "{{name}}"
+  ],
+  "license": "ISC"
+}

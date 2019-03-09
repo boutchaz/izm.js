@@ -2,7 +2,7 @@
 /* eslint-disable import/no-dynamic-require */
 const request = require('supertest');
 const { resolve } = require('path');
-const mongoose = require('mongoose');
+const { model, connection } = require('mongoose');
 const {
   it,
   before,
@@ -10,10 +10,18 @@ const {
   afterEach,
 } = require('mocha');
 
+const User = model('User');
+
+const { createUser } = require(resolve('helpers/utils'));
+
 const express = require(resolve('./config/lib/express'));
 const { prefix } = require(resolve('config'));
 
 let app;
+const credentials = {
+  username: 'username',
+  password: 'jsI$Aw3$0m3',
+};
 let agent;
 
 /**
@@ -22,15 +30,29 @@ let agent;
 describe('tests', () => {
   before(async () => {
     // Get application
-    app = await express.init(mongoose.connection.db);
+    app = await express.init(connection.db);
     agent = request.agent(app);
   });
 
   describe('Module is up', () => {
-    it('The module should respond to the ok request', async () => {
+    it('I am not allowed to call the API if I do not have the IAM "{{name}}:ok"', async () => {
+      await createUser(credentials, []);
+      await agent.post('/api/v1/auth/signin').send(credentials).expect(200);
+      await agent.get(`${prefix}/{{name}}/ok`).expect(403);
+    });
+
+    it('I am allowed to call the API if I have the IAM "{{name}}:ok"', async () => {
+      await createUser(credentials, [
+        '{{name}}:ok',
+      ]);
+      await agent.post('/api/v1/auth/signin').send(credentials).expect(200);
       await agent.get(`${prefix}/{{name}}/ok`).expect(200);
     });
   });
 
-  afterEach(async () => {});
+  afterEach(async () => {
+    await Promise.all([
+      User.remove(),
+    ]);
+  });
 });

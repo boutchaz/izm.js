@@ -195,7 +195,7 @@ exports.saveOAuthUserProfile = (req, providerUserProfile, done) => {
         const possibleUsername = providerUserProfile.username || ((providerUserProfile.email) ? providerUserProfile.email.split('@')[0] : '');
 
         return User.findUniqueUsername(possibleUsername, null, () => {
-          const user_ = new User({
+          const userTmp = new User({
             name: {
               first: providerUserProfile.firstName,
               last: providerUserProfile.lastName,
@@ -207,7 +207,7 @@ exports.saveOAuthUserProfile = (req, providerUserProfile, done) => {
           });
 
           // And save the user
-          user_.save(err_ => done(err_, user_));
+          userTmp.save(err_ => done(err_, userTmp));
         });
         // eslint-disable-next-line
       } else {
@@ -216,29 +216,29 @@ exports.saveOAuthUserProfile = (req, providerUserProfile, done) => {
     });
   } else {
     // User is already logged in, join the provider data to the existing user
-    const user_ = req.user;
+    const userTmp = req.user;
 
     // Check if user exists, is not signed in using this provider, and doesn't
     // have that provider data already configured
     if (
-      user_.provider !== providerUserProfile.provider
-      && (!user_.additionalProvidersData
-        || !user_.additionalProvidersData[providerUserProfile.provider])
+      userTmp.provider !== providerUserProfile.provider
+      && (!userTmp.additionalProvidersData
+        || !userTmp.additionalProvidersData[providerUserProfile.provider])
     ) {
       // Add the provider data to the additional provider data field
-      if (!user_.additionalProvidersData) {
-        user_.additionalProvidersData = {};
+      if (!userTmp.additionalProvidersData) {
+        userTmp.additionalProvidersData = {};
       }
 
-      user_.additionalProvidersData[
+      userTmp.additionalProvidersData[
         providerUserProfile.provider
       ] = providerUserProfile.providerData;
 
       // Then tell mongoose that we've updated the additionalProvidersData field
-      user_.markModified('additionalProvidersData');
+      userTmp.markModified('additionalProvidersData');
 
       // And save the user
-      user_.save(err => done(err, user_, '/settings/accounts'));
+      userTmp.save(err => done(err, userTmp, '/settings/accounts'));
     } else {
       return done(new Error(req.t('USER_PROVIDER_ALREADY_CONNECTED')), req.user);
     }
