@@ -34,7 +34,7 @@ describe('tests', () => {
     agent = request.agent(app);
   });
 
-  describe('Module is up', () => {
+  describe('Module "{{name}}" is up', () => {
     it('I am not allowed to call the API if I do not have the IAM "{{name}}:ok"', async () => {
       await createUser(credentials, []);
       await agent.post('/api/v1/auth/signin').send(credentials).expect(200);
