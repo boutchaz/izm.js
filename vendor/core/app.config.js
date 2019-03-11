@@ -1,6 +1,7 @@
 module.exports = () => {
   const app = {
-    title: 'My awesome API',
+    title: process.env.APP_TITLE || 'My awesome API',
+    description: process.env.APP_DESCRIPTION || 'Application generated with the awesome boilerplate "node-boilerplate"',
     pages: {
       login: '/#/auth',
     },

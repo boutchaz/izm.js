@@ -21,12 +21,16 @@ module.exports = {
           users.me,
         ],
         iam: 'users:profile:get',
+        title: 'Get current user details',
+        description: 'API to fetch the current user details',
       },
       post: {
         middlewares: [
           users.update,
         ],
         iam: 'users:profile:edit',
+        title: 'Update profile',
+        description: 'Update current user details',
       },
     },
   }, {
@@ -37,6 +41,8 @@ module.exports = {
           users.removeOAuthProvider,
         ],
         iam: 'users:oauth:remove',
+        title: 'Remove a social network account',
+        description: 'API to remove an linked social network account',
       },
     },
   }, {
@@ -47,6 +53,8 @@ module.exports = {
           users.getProfilePicture,
         ],
         iam: 'users:profile:picture:get',
+        title: 'Get current user profile picture',
+        description: 'API to fetch the image of the current user',
       },
       post: {
         middlewares: [
@@ -62,6 +70,8 @@ module.exports = {
           users.uploadProfilePicture,
         ],
         iam: 'users:profile:picture:update',
+        title: 'Update profile picture',
+        description: 'Use this API to upload a new profile picture',
       },
     },
   }],
