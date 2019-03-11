@@ -19,6 +19,9 @@
     "generate:module": "plop module",
     "postinstall": "./scripts/install-dependencies.js"
   },
+  "engines": {
+    "node": ">=10.15.3"
+  },
   "dependencies": {
     "@sendgrid/mail": "^6.3.1",
     "acl": "^0.4.9",
