@@ -13,6 +13,8 @@ module.exports = {
         post: {
           middlewares: [users.forgot],
           iam: 'users:auth:passwd:forgotten',
+          title: 'Reset the user password',
+          description: 'Generate a reset password token and send it to the user',
         },
       },
     },
@@ -22,6 +24,8 @@ module.exports = {
         get: {
           middlewares: [users.name],
           iam: 'users:auth:name',
+          title: 'Get the user fullname',
+          description: 'API to get the current user fullname',
         },
       },
     },
@@ -31,10 +35,14 @@ module.exports = {
         get: {
           middlewares: [users.validateResetToken],
           iam: 'users:auth:passwd:validate-token',
+          title: 'Change password',
+          description: 'Redirect the user to the right page to change his password',
         },
         post: {
           middlewares: [users.reset],
           iam: 'users:auth:passwd:reset',
+          title: 'Change the password',
+          description: 'Change a user password using a valid reset password token',
         },
       },
     },
@@ -44,6 +52,8 @@ module.exports = {
         post: {
           middlewares: [users.changePassword],
           iam: 'users:passwd:change',
+          title: 'Change current user password',
+          description: 'API to change the current user password',
         },
       },
     },
@@ -53,6 +63,8 @@ module.exports = {
         post: {
           middlewares: [users.signup],
           iam: 'users:auth:signup',
+          title: 'Signup',
+          description: 'Sign up a new user',
         },
       },
     },
@@ -62,6 +74,8 @@ module.exports = {
         post: {
           middlewares: [users.signin],
           iam: 'users:auth:signin',
+          title: 'Signin',
+          description: 'Sign in an existing user',
         },
       },
     },
@@ -71,6 +85,8 @@ module.exports = {
         get: {
           middlewares: [users.signout],
           iam: 'users:auth:signout',
+          title: 'Signout',
+          description: 'Signout the current user',
         },
       },
     },
@@ -80,6 +96,8 @@ module.exports = {
         get: {
           middlewares: [users.confirm],
           iam: 'users:auth:code:confirm',
+          title: 'Confirm code',
+          description: 'Confirm an automatically generated code',
         },
       },
     },
@@ -89,6 +107,8 @@ module.exports = {
         get: {
           middlewares: [users.resend],
           iam: 'users:auth:code:resend',
+          title: 'Resend code',
+          description: 'Resend an automatically generated code',
         },
       },
     },

@@ -31,18 +31,24 @@ module.exports = {
           adminCtrls.read,
         ],
         iam: 'users:admin:read',
+        title: 'Get user',
+        description: 'Get a specific user using his `id`',
       },
       put: {
         middlewares: [
           adminCtrls.update,
         ],
         iam: 'users:admin:update',
+        title: 'Update an existing user',
+        description: 'Update a specific user using his identifier',
       },
       delete: {
         middlewares: [
           adminCtrls.delete,
         ],
         iam: 'users:admin:delete',
+        title: 'Remove an existing user',
+        description: 'Remove a specific user using his identifier',
       },
     },
   }, {
@@ -53,6 +59,8 @@ module.exports = {
           adminCtrls.picture,
         ],
         iam: 'users:admin:picture',
+        title: 'Get user profile picture',
+        description: 'Get the profile picture of an existing using his identifier',
       },
     },
   }],
