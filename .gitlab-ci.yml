@@ -1,7 +1,7 @@
-image: node:10.13.0
+image: node:10.15.3
 
 services:
-  - mongo:4.0.4
+  - mongo:4.0.6
 
 variables:
   NODE_ENV: "test"
