@@ -3,12 +3,6 @@
 /**
  * Module dependencies.
  */
-const path = require('path');
-const multer = require('multer');
-
-const config = require(path.resolve('./config'));
-// eslint-disable-next-line
-const gridfsStorage = require("gridfs-storage");
 const users = require('../controllers/users.server.controller');
 
 module.exports = {
@@ -55,23 +49,6 @@ module.exports = {
         iam: 'users:profile:picture:get',
         title: 'Get current user profile picture',
         description: 'API to fetch the image of the current user',
-      },
-      post: {
-        middlewares: [
-          multer({
-            storage: gridfsStorage({
-              resize: config.app.profile.picture.thumbnail,
-            }),
-            fileFilter: users.profilePictFilter,
-            limits: {
-              fileSize: 524288, // 512Kb
-            },
-          }).single('avatar'),
-          users.uploadProfilePicture,
-        ],
-        iam: 'users:profile:picture:update',
-        title: 'Update profile picture',
-        description: 'Use this API to upload a new profile picture',
       },
     },
   }],
