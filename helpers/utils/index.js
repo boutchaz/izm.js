@@ -29,7 +29,7 @@ exports.changePosition = (arr, old_index, new_index) => {
  * Validates a payload with a given schema
  * @param {Object} schema The schema of the payload
  */
-exports.validate = schema => (req, res, next) => {
+exports.validate = schema => async function validateSchema(req, res, next) {
   const ajv = new Ajv();
   const validate = ajv.compile(schema);
 
@@ -48,7 +48,7 @@ exports.validate = schema => (req, res, next) => {
  * Check current user has IAM
  * @param {Object} iam the IAM to check
  */
-exports.hasIAM = iam => async (req, res, next) => {
+exports.hasIAM = iam => async function hasIAM(req, res, next) {
   const { iams } = req;
   let count;
 
@@ -83,7 +83,7 @@ exports.getBaseURLFromRequest = (req) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next The callback
  */
-exports.select = (req, res, next) => {
+exports.select = async function selectAttributes(req, res, next) {
   const query = req.query.$select;
   if (query) {
     const selection = query
@@ -102,7 +102,12 @@ exports.select = (req, res, next) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next The callback
  */
-exports.expand = (select1, select2, sort1, sort2) => (req, res, next) => {
+exports.expand = (
+  select1,
+  select2,
+  sort1,
+  sort2,
+) => async function expandAttributes(req, res, next) {
   const exp = req.query.$expand;
   if (exp) {
     const expArray = exp.split(',');

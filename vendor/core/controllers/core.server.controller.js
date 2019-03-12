@@ -10,7 +10,7 @@ const { vendor } = config.files.server.modules;
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.renderIndex = (req, res) => {
+exports.renderIndex = async function renderIndex(req, res) {
   res.render(`${vendor}/core/views/index`, {
     user: req.user ? req.user.toJSON({ virtuals: true }) : null,
   });
@@ -22,7 +22,7 @@ exports.renderIndex = (req, res) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.renderServerError = (req, res) => {
+exports.renderServerError = async function renderServerError(req, res) {
   req.i18n.setDefaultNamespace('vendor:core');
   res.status(500).render(`${vendor}/core/views/500`, {
     title: req.t('ERROR_500_TITLE'),
@@ -37,7 +37,7 @@ exports.renderServerError = (req, res) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.renderNotFound = (req, res) => {
+exports.renderNotFound = async function renderNotFound(req, res) {
   req.i18n.setDefaultNamespace('vendor:core');
   res.status(404).format({
     'text/html': () => {

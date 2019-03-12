@@ -19,7 +19,7 @@ const { vendor } = config.files.server.modules;
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.forgot = async (req, res, next) => {
+exports.forgot = async function forgot(req, res, next) {
   if (!req.body.username) {
     return res.status(422).send({
       message: req.t('USER_BLANK_USERNAME'),
@@ -91,18 +91,20 @@ exports.forgot = async (req, res, next) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.validateResetToken = (req, res) => User.findOne({
-  resetPasswordToken: req.params.token,
-  resetPasswordExpires: {
-    $gt: Date.now(),
-  },
-}, (err, user) => {
-  if (err || !user) {
-    return res.redirect('/password/reset/invalid');
-  }
+exports.validateResetToken = async function validateResetToken(req, res) {
+  User.findOne({
+    resetPasswordToken: req.params.token,
+    resetPasswordExpires: {
+      $gt: Date.now(),
+    },
+  }, (err, user) => {
+    if (err || !user) {
+      return res.redirect('/password/reset/invalid');
+    }
 
-  return res.redirect(`/password/reset/${req.params.token}`);
-});
+    return res.redirect(`/password/reset/${req.params.token}`);
+  });
+};
 
 /**
  * Reset password POST from email token
@@ -110,7 +112,7 @@ exports.validateResetToken = (req, res) => User.findOne({
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.reset = async (req, res, next) => {
+exports.reset = async function reset(req, res, next) {
   // Init Variables
   const passwordDetails = req.body;
   let user;
@@ -179,7 +181,7 @@ exports.reset = async (req, res, next) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.changePassword = async (req, res, next) => {
+exports.changePassword = async function changePassword(req, res, next) {
   // Init Variables
   const passwordDetails = req.body;
 

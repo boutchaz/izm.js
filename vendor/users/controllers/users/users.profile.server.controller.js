@@ -21,7 +21,7 @@ const User = mongoose.model('User');
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.update = async (req, res) => {
+exports.update = async function update(req, res) {
   // Init Variables
   let {
     user,
@@ -52,7 +52,7 @@ exports.update = async (req, res) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.getProfilePicture = (req, res) => {
+exports.getProfilePicture = async function getProfilePicture(req, res) {
   res.redirect(req.user.profilePictureUrl);
 };
 
@@ -62,7 +62,7 @@ exports.getProfilePicture = (req, res) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.uploadProfilePicture = async (req, res, next) => {
+exports.uploadProfilePicture = async function uploadProfilePicture(req, res, next) {
   const Grid = mongoose.model('Grid');
   const { file, user } = req;
   const { file: f } = file;
@@ -96,7 +96,7 @@ exports.uploadProfilePicture = async (req, res, next) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.profilePictFilter = (req, file, cb) => {
+exports.profilePictFilter = async function profilePictFilter(req, file, cb) {
   if (config.app.profile.picture.accept.lastIndexOf(file.mimetype) < 0) {
     return cb(new Error(req.t('USER_PROFILE_PIC_INVALID')));
   }
@@ -110,7 +110,7 @@ exports.profilePictFilter = (req, file, cb) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.me = async (req, res) => {
+exports.me = async function me(req, res) {
   let { $expand } = req.query;
   const { $select } = req.query;
   const { iams = [] } = req;
@@ -151,7 +151,7 @@ exports.me = async (req, res) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.confirm = async (req, res) => {
+exports.confirm = async function confirm(req, res) {
   let user;
   const {
     query,
@@ -222,7 +222,7 @@ exports.confirm = async (req, res) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.resend = async (req, res) => {
+exports.resend = async function resend(req, res) {
   let user;
   const {
     query,
@@ -261,7 +261,13 @@ exports.resend = async (req, res) => {
   });
 };
 
-exports.name = (req, res) => {
+/**
+ * Get the fullname of the current user
+ * @param {IncommingMessage} req The request
+ * @param {OutcommingMessage} res The response
+ * @param {Function} next Go to the next middleware
+ */
+exports.name = async function name(req, res) {
   const { user } = req;
 
   if (user && user.name) {
