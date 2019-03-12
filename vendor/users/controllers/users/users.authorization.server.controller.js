@@ -13,7 +13,7 @@ const User = mongoose.model('User');
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.userByID = (req, res, next, id) => {
+exports.userByID = async function userByID(req, res, next, id) {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).send({
       message: req.t('USER_INVALID', {

@@ -9,7 +9,7 @@ const IAM = mongoose.model('IAM');
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.getById = async (req, res, next, id) => {
+exports.getById = async function getById(req, res, next, id) {
   let role;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -35,7 +35,7 @@ exports.getById = async (req, res, next, id) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.get = async (req, res) => {
+exports.get = async function get(req, res) {
   const { role } = req;
 
   if (role === undefined) return res.status(404).json('not found');
@@ -49,7 +49,7 @@ exports.get = async (req, res) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.listRoles = async (req, res, next) => {
+exports.listRoles = async function listRoles(req, res, next) {
   let roles = [];
 
   try {
@@ -76,7 +76,7 @@ exports.listRoles = async (req, res, next) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.verifyExisting = async (req, res, next) => {
+exports.verifyExisting = async function verifyExisting(req, res, next) {
   const { name } = req.body;
 
   let exists = [];
@@ -96,7 +96,7 @@ exports.verifyExisting = async (req, res, next) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.verifyIams = async (req, res, next) => {
+exports.verifyIams = async function verifyIAMs(req, res, next) {
   const { iams: permissions } = req.body;
 
   // filter the valid object ids
@@ -132,7 +132,7 @@ exports.verifyIams = async (req, res, next) => {
 /**
  * Creates new role
  */
-exports.create = async (req, res, next) => {
+exports.create = async function create(req, res, next) {
   const { roleIams, body } = req;
   const { name, title, description } = body;
 
@@ -158,7 +158,7 @@ exports.create = async (req, res, next) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.update = async (req, res, next) => {
+exports.update = async function update(req, res, next) {
   const { roleIams, body } = req;
   const { title, description, name } = body;
   let { role } = req;
