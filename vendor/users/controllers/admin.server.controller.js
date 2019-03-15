@@ -19,7 +19,7 @@ const errorHandler = require(resolve(`./${vendor}/core/controllers/errors.server
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.read = (req, res) => {
+exports.read = async function read(req, res) {
   res.json(req.model.toJSON({
     virtuals: true,
   }));
@@ -31,7 +31,7 @@ exports.read = (req, res) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.picture = (req, res) => {
+exports.picture = async function picture(req, res) {
   res.redirect(req.model.profilePictureUrl);
 };
 
@@ -41,7 +41,7 @@ exports.picture = (req, res) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.update = async (req, res) => {
+exports.update = async function update(req, res) {
   const user = req.model;
 
   // For security purposes only merge these parameters
@@ -73,7 +73,7 @@ exports.update = async (req, res) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.delete = (req, res) => {
+exports.delete = async function remove(req, res) {
   const user = req.model;
 
   user.remove((err) => {
@@ -90,7 +90,7 @@ exports.delete = (req, res) => {
 /**
  * List of Users
  */
-exports.list = (req, res) => {
+exports.list = async function list(req, res) {
   const private_attrs = config.app.profile.private_attrs || [];
   User
     .find({}, private_attrs.map(attr => `-${attr}`).join(' '))
@@ -107,7 +107,7 @@ exports.list = (req, res) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.userByID = (req, res, next, id) => {
+exports.userByID = async function userByID(req, res, next, id) {
   const private_attrs = config.app.profile.private_attrs || [];
 
   if (!mongoose.Types.ObjectId.isValid(id)) {

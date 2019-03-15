@@ -4,4 +4,6 @@
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.ok = (req, res) => res.json(true);
+exports.ok = async function ok(req, res) {
+  res.json(true);
+};

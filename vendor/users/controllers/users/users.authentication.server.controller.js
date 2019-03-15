@@ -27,7 +27,7 @@ const noReturnUrls = [
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.signup = async (req, res, next) => {
+exports.signup = async function signup(req, res, next) {
   // For security measurement we sanitize the user object
   const b = User.sanitize(req.body);
 
@@ -71,7 +71,7 @@ exports.signup = async (req, res, next) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.signin = (req, res, next) => {
+exports.signin = async function signin(req, res, next) {
   // eslint-disable-next-line
   passport.authenticate("local", (err, user, info) => {
     if (err || !user) {
@@ -110,7 +110,7 @@ exports.signin = (req, res, next) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.signout = (req, res) => {
+exports.signout = async function signout(req, res) {
   req.logout();
   res.redirect(config.app.pages.login || '/');
 };
@@ -118,7 +118,7 @@ exports.signout = (req, res) => {
 /**
  * OAuth provider call
  */
-exports.oauthCall = (strategy, scope) => (req, res, next) => {
+exports.oauthCall = (strategy, scope) => async function oauthCall(req, res, next) {
   // Set redirection path on session.
   // Do not redirect to a signin or signup page
   if (noReturnUrls.indexOf(req.query.redirect_to) === -1) {
@@ -134,7 +134,7 @@ exports.oauthCall = (strategy, scope) => (req, res, next) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.oauthCallback = strategy => (req, res, next) => {
+exports.oauthCallback = strategy => async function oauthCall(req, res, next) {
   // Pop redirect URL from session
   const sessionRedirectURL = req.session.redirect_to;
   delete req.session.redirect_to;
@@ -253,7 +253,7 @@ exports.saveOAuthUserProfile = (req, providerUserProfile, done) => {
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
  */
-exports.removeOAuthProvider = (req, res) => {
+exports.removeOAuthProvider = async function removeOAuthProvider(req, res) {
   const {
     user,
   } = req;
