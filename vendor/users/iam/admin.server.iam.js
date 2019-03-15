@@ -57,6 +57,7 @@ module.exports = {
       get: {
         middlewares: [
           adminCtrls.picture,
+          adminCtrls.svg({ size: 46, color: '#d35400', fill: '#ffffff' }),
         ],
         iam: 'users:admin:picture',
         title: 'Get user profile picture',
