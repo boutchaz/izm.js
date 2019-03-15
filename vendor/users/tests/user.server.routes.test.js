@@ -141,14 +141,6 @@ describe('User CRUD tests', () => {
     signoutRes.text.should.equal('Found. Redirecting to /#/auth');
   });
 
-  it('should not be able to retrieve a list of users if not admin', async () => {
-    await agent
-      .post('/api/v1/auth/signin')
-      .send(credentials)
-      .expect(200);
-    await agent.get('/api/v1/users').expect(403);
-  });
-
   it('should be able to retrieve a list of users if admin', async () => {
     user.roles = ['user', 'admin'];
 
@@ -159,7 +151,7 @@ describe('User CRUD tests', () => {
       .expect(200);
     const usersGetRes = await agent.get('/api/v1/users').expect(200);
 
-    usersGetRes.body.should.be.instanceof(Array).and.have.lengthOf(1);
+    usersGetRes.body.value.should.be.instanceof(Array).and.have.lengthOf(1);
   });
 
   it('should be able to get a single user details if admin', async () => {

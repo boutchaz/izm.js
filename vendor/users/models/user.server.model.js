@@ -239,12 +239,11 @@ const UserSchema = new Schema(
 );
 
 UserSchema.virtual('profilePictureUrl').get(function get_picture_url() {
-  const defaultPict = config.app.profile.picture.default;
   if (this.picture) {
     return `${config.prefix}/files/${this.picture}/view?size=300x300`;
   }
 
-  return !this.isMale ? defaultPict.female : defaultPict.male;
+  return `${config.prefix}/users/${this.id}/picture`;
 });
 
 UserSchema.virtual('name.full').get(function get_fullname() {
@@ -422,6 +421,31 @@ UserSchema.statics.generateRandomPassphrase = function generateRandomPassphrase(
 };
 
 const UserModel = mongoose.model('User', UserSchema);
+
+// Add the email unicity index
+UserModel.collection.createIndex('email', {
+  unique: true,
+  name: 'username_unicity',
+});
+
+// Add the username unicity index
+UserModel.collection.createIndex('username', {
+  unique: true,
+  name: 'email_unicity',
+});
+
+// Create the text indices
+UserModel.collection.createIndex(
+  {
+    email: 'text',
+    username: 'text',
+    'name.first': 'text',
+    'name.last': 'text',
+  },
+  {
+    name: 'text_fields',
+  },
+);
 
 if (config.validations.mondatory.lastIndexOf('phone') >= 0) {
   UserModel.collection.createIndex(
