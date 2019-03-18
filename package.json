@@ -1,6 +1,6 @@
 {
   "name": "app",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "test": "node ./node_modules/.bin/mocha --recursive ./helpers/test-hooks.js ./vendor/*/tests/*.test.js ./modules/*/tests/*.test.js",
