@@ -170,7 +170,7 @@ exports.createUser = async (
     password: 'jsI$Aw3$0m3',
   },
   iams = ['users:auth:signin'],
-  name = 'Role-tests') => {
+  name = 'role-tests') => {
   const list = await IAM.find({
     iam: {
       $in: iams,

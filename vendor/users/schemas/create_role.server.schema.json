@@ -20,7 +20,8 @@
     }
   },
   "required":[
-    "name"
+    "name",
+    "iams"
   ],
   "additionalProperties": false
 }

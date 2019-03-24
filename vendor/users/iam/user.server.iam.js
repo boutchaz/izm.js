@@ -10,19 +10,20 @@ module.exports = {
   routes: [{
     path: '/',
     methods: {
+      /**
+       * @params
+       * [{
+       *   "key": "$expand",
+       *   "value": "iams",
+       *   "description": "You can use this parameter to expand related attributes"
+       * }, {
+       *   "key": "$select",
+       *   "value": "name.first,email,iams",
+       *   "description": "Use this parameter to select specific attributes"
+       * }]
+       */
       get: {
-        /**
-         * @params
-         * [{
-         *   "key": "$expand",
-         *   "value": "iams",
-         *   "description": "You can use this parameter to expand related attributes"
-         * }, {
-         *   "key": "$select",
-         *   "value": "name.first,email,iams",
-         *   "description": "Use this parameter to select specific attributes"
-         * }]
-         */
+        parents: ['modules:users:profile'],
         middlewares: [
           users.me,
         ],
@@ -31,6 +32,7 @@ module.exports = {
         description: 'API to fetch the current user details',
       },
       post: {
+        parents: ['modules:users:profile'],
         middlewares: [
           users.update,
         ],
@@ -43,6 +45,7 @@ module.exports = {
     path: '/accounts',
     methods: {
       delete: {
+        parents: ['modules:users:profile'],
         middlewares: [
           users.removeOAuthProvider,
         ],
@@ -55,6 +58,7 @@ module.exports = {
     path: '/picture',
     methods: {
       get: {
+        parents: ['modules:users:profile'],
         middlewares: [
           users.getProfilePicture,
         ],
