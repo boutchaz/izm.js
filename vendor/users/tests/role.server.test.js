@@ -261,6 +261,11 @@ describe('Role tests', () => {
   afterEach(async () => {
     await Promise.all([
       User.remove(),
+      Role.remove({
+        name: {
+          $nin: ['guest', 'user', 'admin'],
+        },
+      }),
     ]);
   });
 });
