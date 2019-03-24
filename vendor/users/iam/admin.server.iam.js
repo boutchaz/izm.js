@@ -32,6 +32,7 @@ module.exports = {
        * }
        */
       get: {
+        parents: ['modules:users:users:manage'],
         middlewares: [
           adminCtrls.list,
         ],
@@ -44,6 +45,7 @@ module.exports = {
     path: '/:userId',
     methods: {
       get: {
+        parents: ['modules:users:users:manage'],
         middlewares: [
           adminCtrls.read,
         ],
@@ -52,6 +54,7 @@ module.exports = {
         description: 'Get a specific user using his `id`',
       },
       put: {
+        parents: ['modules:users:users:manage'],
         middlewares: [
           adminCtrls.update,
         ],
@@ -60,6 +63,7 @@ module.exports = {
         description: 'Update a specific user using his identifier',
       },
       delete: {
+        parents: ['modules:users:users:manage'],
         middlewares: [
           adminCtrls.delete,
         ],
@@ -72,6 +76,7 @@ module.exports = {
     path: '/:userId/picture',
     methods: {
       get: {
+        parents: ['modules:users:users:manage'],
         middlewares: [
           adminCtrls.picture,
           adminCtrls.svg({ size: 46, color: '#d35400', fill: '#ffffff' }),

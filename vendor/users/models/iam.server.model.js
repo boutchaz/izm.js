@@ -85,4 +85,12 @@ IAMSchema.statics.getChildren = async function getChildren(ids = [], cache = [])
   return list;
 };
 
-module.exports = mongoose.model('IAM', IAMSchema);
+const IAMModel = mongoose.model('IAM', IAMSchema);
+
+// Add the iam unicity index
+IAMModel.collection.createIndex('iam', {
+  unique: true,
+  name: 'iam_unicity',
+});
+
+module.exports = IAMModel;

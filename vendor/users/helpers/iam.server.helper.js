@@ -62,44 +62,30 @@ class Iam {
       one = await this.IamModel.findOneAndUpdate({ iam }, obj, {
         upsert: true,
         setDefaultsOnInsert: true,
+        new: true,
       });
     } catch (e) {
       debug('Database Error');
     }
 
     if (Array.isArray(parents)) {
-      let list = parents
+      const { _id: id } = one;
+      const list = parents
         .filter((g, index) => Boolean(g)
           && typeof g === 'string'
           && parents.indexOf(g) === index)
-        .map(g => this.IamModel.findOne({ iam: g }));
+        .map(g => this.IamModel.findOneAndUpdate({ iam: g }, {
+          iam: g,
+          $addToSet: {
+            children: id,
+          },
+        }, {
+          upsert: true,
+          setDefaultsOnInsert: true,
+          new: true,
+        }));
 
       try {
-        list = await Promise.all(list);
-        list = list.map((item, index) => {
-          if (!item) {
-            return new this.IamModel({
-              iam: parents[index],
-              affectable: true,
-              system: false,
-              children: [one],
-              description: '',
-              groups: [],
-            }).save();
-          }
-
-          const { _id: id } = one;
-          const found = Array.isArray(item.children)
-            && item.children.find(itemId => itemId.toString() === id.toString());
-
-          if (!found) {
-            item.children.push(id);
-            return item.save();
-          }
-
-          return item;
-        });
-
         await Promise.all(list);
       } catch (e) {
         debug('Database Error');

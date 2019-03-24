@@ -49,4 +49,12 @@ RoleSchema.statics.getIAMs = async function getIAMs(roles = []) {
   return list;
 };
 
-module.exports = mongoose.model('Role', RoleSchema);
+const RoleModel = mongoose.model('Role', RoleSchema);
+
+// Add the name unicity index
+RoleModel.collection.createIndex('name', {
+  unique: true,
+  name: 'name_unicity',
+});
+
+module.exports = RoleModel;

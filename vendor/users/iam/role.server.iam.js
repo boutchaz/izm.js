@@ -24,12 +24,14 @@ module.exports = {
           title: 'Get available roles',
           decription: 'Returns a list of the roles available',
           iam: 'administration:roles:list',
+          parents: ['modules:users:roles:manage'],
           middlewares: [ctrl.listRoles],
         },
         post: {
           title: 'Create new role',
           description: 'Creates new role with the given permissions',
           iam: 'administration:roles:create',
+          parents: ['modules:users:roles:manage'],
           middlewares: [
             utils.validate(createSchema),
             ctrl.verifyExisting,
@@ -46,12 +48,14 @@ module.exports = {
           title: 'Get a role by id',
           description: 'returns the object of the role',
           iam: 'administration:roles:get',
+          parents: ['modules:users:roles:manage'],
           middlewares: [ctrl.get],
         },
         put: {
           title: 'Update a role',
           description: 'Updates the role',
           iam: 'administration:roles:update',
+          parents: ['modules:users:roles:manage'],
           middlewares: [
             utils.validate(updateSchema),
             ctrl.verifyIams,
