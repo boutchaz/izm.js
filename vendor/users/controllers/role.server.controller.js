@@ -5,6 +5,7 @@ const IAM = mongoose.model('IAM');
 
 /**
  * fetch the Role by Id
+ * @controller Role By Id
  * @param {IncommingMessage} req The request
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
@@ -31,6 +32,7 @@ exports.getById = async function getById(req, res, next, id) {
 
 /**
  * Returns the Role by id
+ * @controller Get one role
  * @param {IncommingMessage} req The request
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
@@ -45,6 +47,7 @@ exports.get = async function get(req, res) {
 
 /**
  * List all the roles
+ * @controller List roles
  * @param {IncommingMessage} req The request
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
@@ -72,6 +75,7 @@ exports.listRoles = async function listRoles(req, res, next) {
 
 /**
  * Verify existing role
+ * @controller Verify Existance
  * @param {IncommingMessage} req The request
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
@@ -92,6 +96,7 @@ exports.verifyExisting = async function verifyExisting(req, res, next) {
 
 /**
  * Verify Iams
+ * @controller Verify IAM IDs
  * @param {IncommingMessage} req The request
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware
@@ -131,6 +136,10 @@ exports.verifyIams = async function verifyIAMs(req, res, next) {
 
 /**
  * Creates new role
+ * @controller Create new role
+ * @param {IncommingMessage} req The request
+ * @param {OutcommingMessage} res The response
+ * @param {Function} next Go to the next middleware
  */
 exports.create = async function create(req, res, next) {
   const { roleIams, body } = req;
@@ -154,6 +163,7 @@ exports.create = async function create(req, res, next) {
 
 /**
  * Edit a role
+ * @controller Edit existing role
  * @param {IncommingMessage} req The request
  * @param {OutcommingMessage} res The response
  * @param {Function} next Go to the next middleware

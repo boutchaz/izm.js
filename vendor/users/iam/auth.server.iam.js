@@ -10,6 +10,12 @@ module.exports = {
     {
       path: '/forgot',
       methods: {
+        /**
+         * @body
+         * {
+         *  "username": "{{email}}"
+         * }
+         */
         post: {
           middlewares: [users.forgot],
           iam: 'users:auth:passwd:forgotten',
@@ -60,6 +66,26 @@ module.exports = {
     {
       path: '/signup',
       methods: {
+        /**
+         * @body
+         * {
+         *   "name": {
+         *     "first": "{{firstname}}",
+         *     "last": "{{lastname}}"
+         *   },
+         *   "email": "{{email}}",
+         *   "password": "{{password}}",
+         *   "username": "{{username}}",
+         *   "phone": "{{phone}}"
+         * }
+         *
+         * @test
+         * pm.test("Status code is 200", function () {
+         *   pm.response.to.have.status(200);
+         *   const json = pm.response.json();
+         *   pm.environment.set("userId", json._id);
+         * });
+         */
         post: {
           middlewares: [users.signup],
           iam: 'users:auth:signup',
@@ -71,6 +97,20 @@ module.exports = {
     {
       path: '/signin',
       methods: {
+        /**
+         * @body
+         * {
+         *   "username": "{{username}}",
+         *   "password": "{{password}}"
+         * }
+         *
+         * @test
+         * pm.test("Status code is 200", function () {
+         *   pm.response.to.have.status(200);
+         *   const json = pm.response.json();
+         *   pm.environment.set("userId", json._id);
+         * });
+         */
         post: {
           middlewares: [users.signin],
           iam: 'users:auth:signin',
@@ -93,6 +133,22 @@ module.exports = {
     {
       path: '/confirm',
       methods: {
+        /**
+         * @params
+         * [{
+         *   "key": "type",
+         *   "value": "email",
+         *   "description": "Specify the code type. the application supports two types: 'email' and 'phone'"
+         * }, {
+         *   "key": "uid",
+         *   "value": "{{userId}}",
+         *   "description": "The user ID"
+         * }, {
+         *   "key": "code",
+         *   "value": "{{code}}",
+         *   "description": "the code"
+         * }]
+         */
         get: {
           middlewares: [users.confirm],
           iam: 'users:auth:code:confirm',

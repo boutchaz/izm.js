@@ -14,6 +14,23 @@ module.exports = {
   routes: [{
     path: '/',
     methods: {
+      /**
+       * @headers
+       * {
+       *  "Content-Type": "application/json"
+       * }
+       *
+       * @test
+       * pm.test("The server respond with 200", () => {
+       *  pm.response.to.have.status(200);
+       * });
+       *
+       * @body
+       * {
+       *  "username": "{{username}}",
+       *  "password": "{{password}}"
+       * }
+       */
       get: {
         middlewares: [
           adminCtrls.list,

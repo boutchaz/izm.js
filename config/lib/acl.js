@@ -42,11 +42,6 @@ const admin = [
   'users:admin:update',
   'users:admin:delete',
   'users:admin:picture',
-
-  // Org IAMs
-  'orgs:request:approve',
-  'orgs:request:reject',
-  'orgs:request:list',
 ];
 
 /**

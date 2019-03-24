@@ -12,7 +12,7 @@ module.exports = {
   prefix: '/roles',
   params: [
     {
-      name: 'id',
+      name: 'roleId',
       middleware: ctrl.getById,
     },
   ],
@@ -40,7 +40,7 @@ module.exports = {
       },
     },
     {
-      path: '/:id',
+      path: '/:roleId',
       methods: {
         get: {
           title: 'Get a role by id',

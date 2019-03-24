@@ -11,6 +11,18 @@ module.exports = {
     path: '/',
     methods: {
       get: {
+        /**
+         * @params
+         * [{
+         *   "key": "$expand",
+         *   "value": "iams",
+         *   "description": "You can use this parameter to expand related attributes"
+         * }, {
+         *   "key": "$select",
+         *   "value": "name.first,email,iams",
+         *   "description": "Use this parameter to select specific attributes"
+         * }]
+         */
         middlewares: [
           users.me,
         ],

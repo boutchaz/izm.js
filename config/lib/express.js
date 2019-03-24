@@ -53,7 +53,7 @@ module.exports.runBootstrap = (app, db) => {
     if (typeof m === 'function') {
       try {
         debug('Bootstraping file %s', f);
-        await m(app, db);
+        await m(config, app, db);
         debug('file "%s" executed successfully', f);
       } catch (e) {
         console.error('Error bootstraping file "%s"', f, e);
