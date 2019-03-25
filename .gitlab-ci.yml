@@ -5,18 +5,10 @@ services:
 
 variables:
   NODE_ENV: "test"
-  MONGODB_URI: "mongodb://mongo/app-test"
-  MAILER_FROM: "$MAILER_FROM"
-  MAILER_HOST: "$MAILER_HOST"
-  MAILER_PORT: "$MAILER_PORT"
-  MAILER_AUTH_USER: "$MAILER_AUTH_USER"
-  MAILER_AUTH_PASS: "$MAILER_AUTH_PASS"
-  MAILER_SECURE: "$MAILER_SECURE"
-  TWILIO_FROM: "$TWILIO_FROM"
-  TWILIO_ACCOUNT_SID: "$TWILIO_ACCOUNT_SID"
-  TWILIO_AUTH_TOKEN: "$TWILIO_AUTH_TOKEN"
+  STAGING_URL: "$STAGING_URL"
   STAGING_DEPLOY_SERVER: "$STAGING_DEPLOY_SERVER"
   STAGING_SSH_PRIVATE_KEY: "$STAGING_SSH_PRIVATE_KEY"
+  PRODUCTION_URL: "$PRODUCTION_URL"
   PRODUCTION_DEPLOY_SERVER: "$PRODUCTION_DEPLOY_SERVER"
   PRODUCTION_SSH_PRIVATE_KEY: "$PRODUCTION_SSH_PRIVATE_KEY"
 
@@ -60,7 +52,7 @@ Deploy on staging:
     - bash ./scripts/gitlab-deploy.sh "$STAGING_DEPLOY_SERVER"
   environment:
     name: staging
-    url: https://demo.fairlynk.com
+    url: $STAGING_URL
   only:
     - develop
 
@@ -75,7 +67,7 @@ Deploy on production:
     - bash ./scripts/gitlab-deploy.sh "$PRODUCTION_DEPLOY_SERVER"
   environment:
     name: production
-    url: https://www.fairlynk.com
+    url: $PRODUCTION_URL
   when: manual
   only:
     - master

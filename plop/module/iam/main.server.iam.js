@@ -11,6 +11,8 @@ module.exports = {
       get: {
         iam: '{{name}}:ok',
         title: '{{name}} is ready',
+        parents: ['modules:{{name}}'],
+        groups: [],
         description: 'Test if the module {{name}} is up and running',
         middlewares: [
           ctrls.ok,
