@@ -30,8 +30,6 @@ if (
   && twilioConfig.authToken
   && twilioConfig.authToken !== 'TWILIO_AUTH_TOKEN'
 ) {
-  // eslint-disable-next-line no-console
-  console.log(twilioConfig);
   // eslint-disable-next-line new-cap
   twilioConfig = new twilio(config.twilio.accountID, config.twilio.authToken);
 } else {

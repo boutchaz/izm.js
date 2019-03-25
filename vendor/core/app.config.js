@@ -1,7 +1,13 @@
+// eslint-disable-next-line import/no-unresolved
+const { getFromEnv } = require('utils');
+
 module.exports = () => {
   const app = {
-    title: process.env.APP_TITLE || 'My awesome API',
-    description: process.env.APP_DESCRIPTION || 'Application generated with the awesome boilerplate "node-boilerplate"',
+    title: getFromEnv('APP_TITLE', 'Node boilerplate API'),
+    description: getFromEnv(
+      'APP_DESCRIPTION',
+      'Application generated with the awesome boilerplate "node-boilerplate"',
+    ),
     pages: {
       login: '/#/auth',
     },
@@ -10,7 +16,7 @@ module.exports = () => {
   return {
     app,
     google: {
-      gaId: 'UA-XXXXX-Y',
+      gaId: getFromEnv('APP_GOOGLE_ID', 'UA-XXXXX-Y'),
     },
   };
 };
