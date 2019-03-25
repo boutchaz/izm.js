@@ -4,6 +4,7 @@
 const mongoose = require('mongoose');
 
 const {
+  model,
   Schema,
 } = mongoose;
 
@@ -32,4 +33,28 @@ const RoleSchema = new Schema({
   collection: 'roles',
 });
 
-module.exports = mongoose.model('Role', RoleSchema);
+RoleSchema.statics.getIAMs = async function getIAMs(roles = []) {
+  const IAM = model('IAM');
+  let list = roles
+    .filter(r => Boolean(r) && typeof r === 'string');
+
+  list = await this.find({ name: list });
+  list = list.filter(Boolean)
+    .map(r => r.iams)
+    .filter(Boolean)
+    .flat();
+
+  list = await IAM.getChildren(list);
+
+  return list;
+};
+
+const RoleModel = mongoose.model('Role', RoleSchema);
+
+// Add the name unicity index
+RoleModel.collection.createIndex('name', {
+  unique: true,
+  name: 'name_unicity',
+});
+
+module.exports = RoleModel;

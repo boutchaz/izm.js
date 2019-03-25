@@ -18,31 +18,31 @@ const util = require('util');
 // eslint-disable-next-line
 const config = require(path.resolve('./config'));
 
-let twilioClient = config.twilio;
+let { twilio: twilioConfig } = config;
 let isSendGrid = false;
 
 if (
-  twilioClient
-  && twilioClient.from
-  && twilioClient.from !== 'TWILIO_FROM'
-  && twilioClient.accountID
-  && twilioClient.accountID !== 'TWILIO_ACCOUNT_SID'
-  && twilioClient.authToken
-  && twilioClient.authToken !== 'TWILIO_AUTH_TOKEN'
+  twilioConfig
+  && twilioConfig.from
+  && twilioConfig.from !== 'TWILIO_FROM'
+  && twilioConfig.accountID
+  && twilioConfig.accountID !== 'TWILIO_ACCOUNT_SID'
+  && twilioConfig.authToken
+  && twilioConfig.authToken !== 'TWILIO_AUTH_TOKEN'
 ) {
   // eslint-disable-next-line new-cap
-  twilioClient = new twilio(config.twilio.accountID, config.twilio.authToken);
+  twilioConfig = new twilio(config.twilio.accountID, config.twilio.authToken);
 } else {
   if (
     (config.validations.mondatory.indexOf('phone') >= 0
       || config.validations.types.indexOf('phone') >= 0)
-    && (twilioClient.from === 'TWILIO_FROM'
-      || twilioClient.accountID === 'TWILIO_ACCOUNT_SID'
-      || twilioClient.authToken === 'TWILIO_AUTH_TOKEN')
+    && (twilioConfig.from === 'TWILIO_FROM'
+      || twilioConfig.accountID === 'TWILIO_ACCOUNT_SID'
+      || twilioConfig.authToken === 'TWILIO_AUTH_TOKEN')
   ) {
     console.warn('Please configure TWILIO_FROM, TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN env vars');
   }
-  twilioClient = false;
+  twilioConfig = false;
 }
 
 if (config.sendGrid && config.sendGrid.key && config.sendGrid.key !== 'SENDGRID_API_KEY') {
@@ -319,8 +319,8 @@ UserSchema.methods.authenticate = function authenticate(password) {
  * Send an sms to the user
  */
 UserSchema.methods.sendSMS = function send_sms(body) {
-  if (this.phone && twilioClient) {
-    return twilioClient.messages.create({
+  if (this.phone && twilioConfig) {
+    return twilioConfig.messages.create({
       to: this.phone,
       from: config.twilio.from,
       body,

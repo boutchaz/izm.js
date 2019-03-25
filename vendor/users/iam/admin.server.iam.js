@@ -14,7 +14,25 @@ module.exports = {
   routes: [{
     path: '/',
     methods: {
+      /**
+       * @headers
+       * {
+       *  "Content-Type": "application/json"
+       * }
+       *
+       * @test
+       * pm.test("The server respond with 200", () => {
+       *  pm.response.to.have.status(200);
+       * });
+       *
+       * @body
+       * {
+       *  "username": "{{username}}",
+       *  "password": "{{password}}"
+       * }
+       */
       get: {
+        parents: ['modules:users:users:manage'],
         middlewares: [
           adminCtrls.list,
         ],
@@ -27,6 +45,7 @@ module.exports = {
     path: '/:userId',
     methods: {
       get: {
+        parents: ['modules:users:users:manage'],
         middlewares: [
           adminCtrls.read,
         ],
@@ -35,6 +54,7 @@ module.exports = {
         description: 'Get a specific user using his `id`',
       },
       put: {
+        parents: ['modules:users:users:manage'],
         middlewares: [
           adminCtrls.update,
         ],
@@ -43,6 +63,7 @@ module.exports = {
         description: 'Update a specific user using his identifier',
       },
       delete: {
+        parents: ['modules:users:users:manage'],
         middlewares: [
           adminCtrls.delete,
         ],
@@ -55,6 +76,7 @@ module.exports = {
     path: '/:userId/picture',
     methods: {
       get: {
+        parents: ['modules:users:users:manage'],
         middlewares: [
           adminCtrls.picture,
           adminCtrls.svg({ size: 46, color: '#d35400', fill: '#ffffff' }),

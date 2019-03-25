@@ -1,29 +1,9 @@
 // eslint-disable-next-line import/no-unresolved, import/no-extraneous-dependencies
-const _ = require('lodash');
 const Ajv = require('ajv');
 const { model } = require('mongoose');
 const debug = require('debug')('boilerplate:helpers:utils');
 
-const IAM = model('IAM');
-const User = model('User');
-const Role = model('Role');
-
 const roleCache = {};
-
-exports.changePosition = (arr, old_index, new_index) => {
-  let new_arr = [];
-  if (Array.isArray(arr) && typeof (old_index) === 'number' && typeof (new_index) === 'number') {
-    if (old_index >= 0
-      && old_index < arr.length
-      && new_index >= 0
-      && new_index < arr.length
-      && old_index !== new_index) {
-      new_arr = _.clone(arr);
-      new_arr.splice(new_index, 0, new_arr.splice(old_index, 1)[0]);
-    }
-  }
-  return new_arr;
-};
 
 /**
  * Validates a payload with a given schema
@@ -43,12 +23,54 @@ exports.validate = schema => async function validateSchema(req, res, next) {
   });
 };
 
+/**
+ * Get an environment variable
+ * @param {String} key The environment variable key
+ * @param {*} defaultValue Default value
+ * @param {String} type Type of the environment variable
+ * @param {String} scope The scope of the environment variable
+ */
+exports.getFromEnv = function getFromEnv(key, defaultValue, type = 'string', scope = 'global') {
+  if (typeof key !== 'string' || !key) {
+    return undefined;
+  }
+
+  let varName = key;
+
+  if (scope && scope !== 'global') {
+    varName = `${scope}_module_${key}`;
+  }
+
+  varName = varName
+    .replace(/[- ]/g, '_')
+    .replace(/_+/g, '_')
+    .toUpperCase();
+
+  let value = process.env[varName];
+
+  // Fix gitlab CI issue (It return always a value, even if the en variable was not defined)
+  if (value === `$${varName}`) {
+    value = undefined;
+  }
+
+  switch (type) {
+    case 'number':
+      return Number.isNaN(value) ? (defaultValue || undefined) : +value;
+    case 'integer':
+      return Number.isNaN(value) ? (defaultValue || undefined) : parseInt(value, 10);
+    case 'boolean':
+      return typeof value === 'undefined' ? (defaultValue || undefined) : value === 'true';
+    default:
+      return typeof value === 'undefined' ? (defaultValue || '') : value;
+  }
+};
 
 /**
  * Check current user has IAM
  * @param {Object} iam the IAM to check
  */
 exports.hasIAM = iam => async function hasIAM(req, res, next) {
+  const IAM = model('IAM');
   const { iams } = req;
   let count;
 
@@ -78,87 +100,6 @@ exports.getBaseURLFromRequest = (req) => {
 };
 
 /**
- * Select Attributs
- * @param {IncommingMessage} req The request
- * @param {OutcommingMessage} res The response
- * @param {Function} next The callback
- */
-exports.select = async function selectAttributes(req, res, next) {
-  const query = req.query.$select;
-  if (query) {
-    const selection = query
-      .split(',')
-      .filter(attr => ['owner.salt', 'owner.secret_key', 'private_attrs'].indexOf(attr) < 0);
-    if (selection.length > 0) {
-      req.$query = req.$query.select(selection.join(' '));
-    }
-  }
-  return next();
-};
-
-/**
- * Expand Attributs
- * @param {IncommingMessage} req The request
- * @param {OutcommingMessage} res The response
- * @param {Function} next The callback
- */
-exports.expand = (
-  select1,
-  select2,
-  sort1,
-  sort2,
-) => async function expandAttributes(req, res, next) {
-  const exp = req.query.$expand;
-  if (exp) {
-    const expArray = exp.split(',');
-    expArray.forEach((element) => {
-      if (!element.includes('.')) {
-        req.$query = req.$query.populate({
-          path: element,
-          select: select1,
-          options: { sort: sort1 },
-        });
-      } else {
-        const expArray2 = element.split('.');
-        req.$query = req.$query.populate({
-          path: expArray2[0],
-          populate: { path: expArray2[1], select: select2, options: { sort: sort2 } },
-          select: select1,
-          options: { sort: sort1 },
-        });
-      }
-    });
-  }
-  return next();
-};
-
-/**
- * Execution of contract
- * @param {IncommingMessage} req The request
- * @param {OutcommingMessage} res The response
- * @param {Function} next The callback
- */
-exports.exec = (withpagination = false) => async (req, res, next) => {
-  let result;
-  if (withpagination) {
-    const { query } = req;
-    const { $skip: skip, $top: top } = query;
-    try {
-      result = await req.$query.paginate({ top, skip });
-    } catch (e) {
-      return next(e);
-    }
-  } else {
-    try {
-      result = await req.$query.exec();
-    } catch (e) {
-      return next(e);
-    }
-  }
-  return res.status(200).json(result);
-};
-
-/**
  * Create a new user that has a specific list of IAMs
  * @param {Object} credentials An object containing the username and the password
  * @param {Array} iams An array of IAM keys to affect to the current user
@@ -170,7 +111,11 @@ exports.createUser = async (
     password: 'jsI$Aw3$0m3',
   },
   iams = ['users:auth:signin'],
-  name = 'Role-tests') => {
+  name = 'role-tests') => {
+  const IAM = model('IAM');
+  const User = model('User');
+  const Role = model('Role');
+
   const list = await IAM.find({
     iam: {
       $in: iams,

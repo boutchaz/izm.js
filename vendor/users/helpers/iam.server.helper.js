@@ -9,7 +9,13 @@ class Iam {
   }
 
   async allow(resource, permission, iam, opts = {}) {
-    const { title, description, module } = opts;
+    const {
+      title,
+      module,
+      groups,
+      parents,
+      description,
+    } = opts;
     const regex = pathToRegexp(resource).toString();
     const obj = {
       resource: regex.substr(1, regex.length - 3),
@@ -37,41 +43,70 @@ class Iam {
       obj.module = module;
     }
 
+    if (Array.isArray(groups) && groups.length > 0) {
+      obj.groups = groups
+        .filter(g => Boolean(g) && typeof g === 'string')
+        .map(g => g
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, ' ')
+          .replace(/ /g, '-'));
+
+      obj.groups = obj.groups
+        .filter((g, index) => obj.groups.indexOf(g) === index);
+    }
+
+    let one;
+
     try {
-      await this.IamModel.findOneAndUpdate({ iam }, obj, {
+      one = await this.IamModel.findOneAndUpdate({ iam }, obj, {
         upsert: true,
         setDefaultsOnInsert: true,
-      }).catch(() => { });
+        new: true,
+      });
     } catch (e) {
       debug('Database Error');
+    }
+
+    if (Array.isArray(parents)) {
+      const { _id: id } = one;
+      const list = parents
+        .filter((g, index) => Boolean(g)
+          && typeof g === 'string'
+          && parents.indexOf(g) === index)
+        .map(g => this.IamModel.findOneAndUpdate({ iam: g }, {
+          iam: g,
+          $addToSet: {
+            children: id,
+          },
+        }, {
+          upsert: true,
+          setDefaultsOnInsert: true,
+          new: true,
+        }));
+
+      try {
+        await Promise.all(list);
+      } catch (e) {
+        debug('Database Error');
+      }
     }
 
     return this;
   }
 
   async IAMsFromRoles(roles = []) {
-    let iams = [];
-
     try {
-      iams = (await this.RoleModel.find({
-        name: {
-          $in: roles,
-        },
-      }).populate('iams').select('iams')).map(r => r.iams);
+      let iams = await this.RoleModel.getIAMs(roles);
 
       // Flatten the IAMs
-      iams = [].concat(...iams).map(iam => iam.toJSON({
+      iams = iams.map(iam => iam.toJSON({
         virtuals: true,
       }));
-      // Remove the dupplicates
-      iams = iams.filter((iam, pos, arr) => {
-        const position = arr.findIndex(one => one.id === iam.id);
-        return position === pos;
-      });
 
       return iams;
     } catch (e) {
-      return iams;
+      return [];
     }
   }
 
