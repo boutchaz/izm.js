@@ -1,8 +1,4 @@
 {
     "eslint.autoFixOnSave": true,
-    "files.eol": "\n",
-    "files.associations": {
-      "modules/*/iam/**/*.iam.js": "iam",
-      "vendor/*/iam/**/*.iam.js": "iam",
-    }
+    "files.eol": "\n"
   }
