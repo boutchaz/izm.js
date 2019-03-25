@@ -12,6 +12,9 @@ variables:
   MAILER_AUTH_USER: "$MAILER_AUTH_USER"
   MAILER_AUTH_PASS: "$MAILER_AUTH_PASS"
   MAILER_SECURE: "$MAILER_SECURE"
+  TWILIO_FROM: "$TWILIO_FROM"
+  TWILIO_ACCOUNT_SID: "$TWILIO_ACCOUNT_SID"
+  TWILIO_AUTH_TOKEN: "$TWILIO_AUTH_TOKEN"
   STAGING_DEPLOY_SERVER: "$STAGING_DEPLOY_SERVER"
   STAGING_SSH_PRIVATE_KEY: "$STAGING_SSH_PRIVATE_KEY"
   PRODUCTION_DEPLOY_SERVER: "$PRODUCTION_DEPLOY_SERVER"
@@ -34,6 +37,7 @@ Install dependencies:
   only:
     - master
     - develop
+    - merge_requests
 
 Run tests:
   stage: test
@@ -43,6 +47,7 @@ Run tests:
   only:
     - master
     - develop
+    - merge_requests
 
 Deploy on staging:
   stage: deploy
@@ -55,7 +60,7 @@ Deploy on staging:
     - bash ./scripts/gitlab-deploy.sh "$STAGING_DEPLOY_SERVER"
   environment:
     name: staging
-    url: $STAGING_URL
+    url: https://demo.fairlynk.com
   only:
     - develop
 
@@ -70,7 +75,7 @@ Deploy on production:
     - bash ./scripts/gitlab-deploy.sh "$PRODUCTION_DEPLOY_SERVER"
   environment:
     name: production
-    url: $PRODUCTION_URL
+    url: https://www.fairlynk.com
   when: manual
   only:
     - master
