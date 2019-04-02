@@ -55,11 +55,17 @@ exports.getFromEnv = function getFromEnv(key, defaultValue, type = 'string', sco
 
   switch (type) {
     case 'number':
-      return Number.isNaN(value) ? (defaultValue || undefined) : +value;
+      return (typeof value === 'undefined' || Number.isNaN(value))
+        ? defaultValue
+        : +value;
     case 'integer':
-      return Number.isNaN(value) ? (defaultValue || undefined) : parseInt(value, 10);
+      return (typeof value === 'undefined' || Number.isNaN(value))
+        ? defaultValue
+        : parseInt(value, 10);
     case 'boolean':
-      return typeof value === 'undefined' ? (defaultValue || undefined) : value === 'true';
+      return typeof value === 'undefined'
+        ? defaultValue
+        : value === 'true';
     default:
       return typeof value === 'undefined' ? (defaultValue || '') : value;
   }
