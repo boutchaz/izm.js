@@ -19,7 +19,7 @@ exports.validate = schema => async function validateSchema(req, res, next) {
   // return next(new Error(JSON.stringify(validate.errors)));
   return res.status(400).json({
     error: true,
-    message: new Error(JSON.stringify(validate.errors)),
+    message: validate.errors,
   });
 };
 
