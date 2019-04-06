@@ -1,5 +1,5 @@
 module.exports = {
-  extends: 'airbnb-base',
+  extends: ['airbnb-base'],
   globals: {},
   rules: {
     indent: 2,
@@ -7,11 +7,14 @@ module.exports = {
     'linebreak-style': ['error', 'unix'],
     quotes: [2, 'single'],
     camelcase: 'off',
-    'max-len': ['error', {
-      code: 100,
-      ignoreComments: true,
-      ignoreStrings: true,
-      ignoreTemplateLiterals: true,
-    }],
+    'max-len': [
+      'error',
+      {
+        code: 100,
+        ignoreComments: true,
+        ignoreStrings: true,
+        ignoreTemplateLiterals: true,
+      },
+    ],
   },
 };
