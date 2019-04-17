@@ -90,6 +90,15 @@ ERRORS      : ${JSON.stringify(this.validate.errors, null, '  ')}
   }
 
   /**
+   * Reset the field value
+   * @chainable
+   */
+  reset() {
+    this.setValue(this.defaultValue);
+    return this;
+  }
+
+  /**
    * Get JSON format of the field
    * @returns {Object} JSON format of the current field
    */
