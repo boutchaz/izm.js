@@ -24,54 +24,6 @@ exports.validate = schema => async function validateSchema(req, res, next) {
 };
 
 /**
- * Get an environment variable
- * @param {String} key The environment variable key
- * @param {*} defaultValue Default value
- * @param {String} type Type of the environment variable
- * @param {String} scope The scope of the environment variable
- */
-exports.getFromEnv = function getFromEnv(key, defaultValue, type = 'string', scope = 'global') {
-  if (typeof key !== 'string' || !key) {
-    return undefined;
-  }
-
-  let varName = key;
-
-  if (scope && scope !== 'global') {
-    varName = `${scope}_module_${key}`;
-  }
-
-  varName = varName
-    .replace(/[- ]/g, '_')
-    .replace(/_+/g, '_')
-    .toUpperCase();
-
-  let value = process.env[varName];
-
-  // Fix gitlab CI issue (It return always a value, even if the en variable was not defined)
-  if (value === `$${varName}`) {
-    value = undefined;
-  }
-
-  switch (type) {
-    case 'number':
-      return (typeof value === 'undefined' || Number.isNaN(value))
-        ? defaultValue
-        : +value;
-    case 'integer':
-      return (typeof value === 'undefined' || Number.isNaN(value))
-        ? defaultValue
-        : parseInt(value, 10);
-    case 'boolean':
-      return typeof value === 'undefined'
-        ? defaultValue
-        : value === 'true';
-    default:
-      return typeof value === 'undefined' ? (defaultValue || '') : value;
-  }
-};
-
-/**
  * Check current user has IAM
  * @param {Object} iam the IAM to check
  */

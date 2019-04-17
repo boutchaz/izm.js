@@ -1,15 +1,14 @@
-const path = require('path');
-const mongoose = require('mongoose');
+const { resolve } = require('path');
+const { model } = require('mongoose');
+const { promisify } = require('util');
 const debug = require('debug')('users:bootstraps');
 
 const Iam = require('../helpers/iam.server.helper');
 
 // eslint-disable-next-line import/no-dynamic-require
-const roles = require(path.resolve('config/lib/acl'));
+const roles = require(resolve('config/lib/acl'));
 // eslint-disable-next-line import/no-dynamic-require
-const config = require(path.resolve('config'));
-
-// const wait$ = (ms = 1000) => new Promise(resolve => setTimeout(resolve, ms));
+const config = require(resolve('config'));
 
 async function seedIAMs() {
   debug('seeding IAMs');
@@ -19,7 +18,7 @@ async function seedIAMs() {
 
   const all$ = config.files.server.iam.map(async (iamFilePath) => {
     // eslint-disable-next-line
-    const m = require(path.resolve(iamFilePath));
+    const m = require(resolve(iamFilePath));
     const exec = regex.exec(iamFilePath);
 
     // Parse the routes
@@ -55,8 +54,8 @@ async function seedIAMs() {
  * Save roles in DB
  */
 async function seedRoles() {
-  const IamModel = mongoose.model('IAM');
-  const RoleModel = mongoose.model('Role');
+  const IamModel = model('IAM');
+  const RoleModel = model('Role');
   const cache = {};
   const iams = []
     .concat(...roles.map(r => r.iams))
@@ -112,6 +111,15 @@ async function seedRoles() {
 
 // Seed roles when bootstraping
 module.exports = async () => {
+  const IamModel = model('IAM');
+  const RoleModel = model('Role');
+
+  const createIAMIndices$ = promisify(IamModel.createIndexes).bind(IamModel);
+  const createRolesIndices$ = promisify(RoleModel.createIndexes).bind(RoleModel);
+
+  await createIAMIndices$();
+  await createRolesIndices$();
+
   await seedIAMs();
   await seedRoles();
 };

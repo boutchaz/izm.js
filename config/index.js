@@ -8,9 +8,11 @@ eslint-disable no-console,import/no-extraneous-dependencies,import/no-dynamic-re
 const _ = require('lodash');
 const chalk = require('chalk');
 const glob = require('glob');
-const fs = require('fs');
+const { existsSync } = require('fs');
 const { resolve, join } = require('path');
 const debug = require('debug')('app:config');
+
+const Environment = require('./lib/env-vars');
 
 /**
  * Get files by glob patterns
@@ -79,8 +81,8 @@ function validateSecureMode(config) {
     return true;
   }
 
-  const privateKey = fs.existsSync(resolve(config.secure.privateKey));
-  const certificate = fs.existsSync(resolve(config.secure.certificate));
+  const privateKey = existsSync(resolve(config.secure.privateKey));
+  const certificate = existsSync(resolve(config.secure.certificate));
 
   if (!privateKey || !certificate) {
     debug(chalk.red('+ Error: Certificate file or key file is missing, falling back to non-SSL mode'));
@@ -149,13 +151,33 @@ function initGlobalConfigFiles(config, assets) {
 }
 
 /**
+ * Load env files
+ * @param {Object} assets All assets
+ */
+function loadEnv(assets) {
+  const env = new Environment(process.env.NODE_ENV);
+  const files = getGlobbedPaths(assets.server.env);
+
+  files.forEach((f) => {
+    const m = require(resolve(f));
+    Object.keys(m).forEach((key) => {
+      const { scope, schema, ...item } = m[key];
+      env.set({
+        ...item,
+        key,
+      }, schema, scope);
+    });
+  });
+
+  return env;
+}
+
+/**
  * Merge modules configuration with the global configuration
  * @param {Object} config The current configuration
  */
 function mergeModulesConfig(config) {
-  const { files } = config;
-  const { server: serverFiles } = files;
-  const { appConfigs } = serverFiles;
+  const { appConfigs } = config.files.server;
 
   let result = config;
 
@@ -194,14 +216,24 @@ function initGlobalConfig() {
   // Merge assets
   const assets = _.merge(defaultAssets, environmentAssets);
 
+  // Load functional modules env files
+  const env = loadEnv(assets);
+
   // Get the default config
   const defaultConfig = require(join(process.cwd(), 'config/env/default'));
 
   // Get the current config
   const environmentConfig = require(join(process.cwd(), 'config/env/', process.env.NODE_ENV)) || {};
 
+  // Expose configuration utilities
+  const utils = {
+    getGlobbedPaths,
+    validateSessionSecret,
+    env,
+  };
+
   // Merge config files
-  let config = _.merge(defaultConfig, environmentConfig);
+  let config = _.merge({ utils }, defaultConfig, environmentConfig);
 
   // read package.json for MAIN project information
   const pkg = require(resolve('./package.json'));
@@ -212,7 +244,7 @@ function initGlobalConfig() {
   // local.js to avoid running test suites on a prod/dev environment (which delete records and make
   // modifications)
   if (process.env.NODE_ENV !== 'test') {
-    config = _.merge(config, (fs.existsSync(join(process.cwd(), 'config/env/local.js')) && require(join(process.cwd(), 'config/env/local.js'))) || {});
+    config = _.merge(config, (existsSync(join(process.cwd(), 'config/env/local.js')) && require(join(process.cwd(), 'config/env/local.js'))) || {});
   }
 
   // Initialize global globbed files
@@ -226,12 +258,6 @@ function initGlobalConfig() {
 
   // Validate session secret
   validateSessionSecret(config);
-
-  // Expose configuration utilities
-  config.utils = {
-    getGlobbedPaths,
-    validateSessionSecret,
-  };
 
   return config;
 }
