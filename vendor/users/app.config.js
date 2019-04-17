@@ -1,7 +1,6 @@
-// eslint-disable-next-line import/no-unresolved
-const { getFromEnv } = require('utils');
+module.exports = (config) => {
+  const { env } = config.utils;
 
-module.exports = () => {
   // Profile configuration
   const profile = {
     picture: {
@@ -35,44 +34,53 @@ module.exports = () => {
     types: [],
     config: {
       phone: {
-        validate: getFromEnv('PHONE_VALIDATE', false, 'boolean', 'users'),
-        code_length: getFromEnv('PHONE_CODE_LENGTH', 4, 'integer', 'users'),
-        max_tries: getFromEnv('PHONE_MAX_TRIES', 10, 'integer', 'users'),
-        authenticate: getFromEnv('PHONE_IS_AUTHENTICATE', false, 'boolean', 'users'),
-        max_resends: getFromEnv('PHONE_MAX_RESENDS', 4, 'integer', 'users'),
+        validate: env.get('PHONE_VALIDATE'),
+        code_length: env.get('PHONE_CODE_LENGTH'),
+        max_tries: env.get('PHONE_MAX_TRIES'),
+        authenticate: env.get('PHONE_IS_AUTHENTICATE'),
+        max_resends: env.get('PHONE_MAX_RESENDS'),
       },
       email: {
-        validate: getFromEnv('EMAIL_VALIDATE', false, 'boolean', 'users'),
-        code_length: getFromEnv('EMAIL_CODE_LENGTH', 80, 'integer', 'users'),
-        max_tries: getFromEnv('EMAIL_MAX_TRIES', 10, 'integer', 'users'),
-        authenticate: getFromEnv('EMAIL_IS_AUTHENTICATE', false, 'boolean', 'users'),
-        max_resends: getFromEnv('EMAIL_MAX_RESENDS', 4, 'integer', 'users'),
+        validate: env.get('EMAIL_VALIDATE'),
+        code_length: env.get('EMAIL_CODE_LENGTH'),
+        max_tries: env.get('EMAIL_MAX_TRIES'),
+        authenticate: env.get('EMAIL_IS_AUTHENTICATE'),
+        max_resends: env.get('EMAIL_MAX_RESENDS'),
       },
     },
   };
 
   // Twilio configuration
   const twilio = {
-    from: getFromEnv('TWILIO_FROM', 'TWILIO_FROM', 'string', 'users'),
-    accountID: getFromEnv('TWILIO_ACCOUNT_SID', 'TWILIO_ACCOUNT_SID', 'string', 'users'),
-    authToken: getFromEnv('TWILIO_AUTH_TOKEN', 'TWILIO_AUTH_TOKEN', 'string', 'users'),
+    from: env.get('TWILIO_FROM'),
+    accountID: env.get('TWILIO_ACCOUNT_SID'),
+    authToken: env.get('TWILIO_AUTH_TOKEN'),
   };
 
   // sendGrid configuration
   const sendGrid = {
-    key: getFromEnv('SENDGRID_API_KEY', 'SENDGRID_API_KEY', 'string', 'users'),
+    key: env.get('SENDGRID_API_KEY'),
   };
 
   // SMTP mailer configuration
   const mailer = {
-    from: getFromEnv('MAILER_FROM', 'MAILER_FROM@example.com'),
+    from: env.get('MAILER_FROM'),
     options: {
-      host: getFromEnv('MAILER_HOST', 'smtp.gmail.com'),
-      port: getFromEnv('MAILER_PORT', 456, 'number'),
-      secure: getFromEnv('MAILER_SECURE', true, 'boolean'),
+      host: env.get({
+        key: 'MAILER_HOST',
+        defaultValue: 'smtp.gmail.com',
+      }),
+      port: env.get({
+        key: 'MAILER_PORT',
+        defaultValue: 456,
+      }, { type: 'number' }),
+      secure: env.get({
+        key: 'MAILER_SECURE',
+        defaultValue: true,
+      }, { type: 'boolean' }),
       auth: {
-        user: getFromEnv('MAILER_AUTH_USER', 'MAILER_AUTH_USER'),
-        pass: getFromEnv('MAILER_AUTH_PASS', 'MAILER_AUTH_PASS'),
+        user: env.get('MAILER_AUTH_USER'),
+        pass: env.get('MAILER_AUTH_PASS'),
       },
     },
   };
@@ -86,7 +94,7 @@ module.exports = () => {
     app: {
       profile,
       roles: {
-        default: getFromEnv('DEFAULT_GROUPS', 'user', 'string', 'users').split(','),
+        default: env.get('DEFAULT_GROUPS'),
       },
     },
   };

@@ -36,17 +36,6 @@ module.exports = {
       },
     },
   },
-  uploads: {
-    uploader: {
-      limits: {
-        fileSize: 52428800, // Max file size in bytes (50 MB)
-      },
-      thumbnail: {
-        width: 100,
-        height: 100,
-      },
-    },
-  },
   i18next: {
     detector: {
       // order and from where user language should be detected

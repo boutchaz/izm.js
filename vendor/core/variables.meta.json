@@ -1,0 +1,14 @@
+{
+  "APP_TITLE": {
+    "name": "Application title",
+    "defaultValue": "Node boilerplate API"
+  },
+  "APP_DESCRIPTION": {
+    "name": "Application description",
+    "defaultValue": "Application generated with the awesome boilerplate \"node-boilerplate\""
+  },
+  "APP_GOOGLE_ID": {
+    "name": "Google Analytics ID",
+    "defaultValue": "UA-XXXXX-Y"
+  }
+}

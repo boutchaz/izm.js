@@ -15,7 +15,6 @@ const RoleSchema = new Schema({
     unique: true,
     lowercase: true,
     trim: true,
-    index: true,
   },
   title: String,
   description: String,
@@ -50,11 +49,6 @@ RoleSchema.statics.getIAMs = async function getIAMs(roles = []) {
 };
 
 const RoleModel = mongoose.model('Role', RoleSchema);
-
-// Add the name unicity index
-RoleModel.collection.createIndex('name', {
-  unique: true,
-  name: 'name_unicity',
-});
+RoleModel.createIndexes();
 
 module.exports = RoleModel;

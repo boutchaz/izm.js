@@ -421,44 +421,6 @@ UserSchema.statics.generateRandomPassphrase = function generateRandomPassphrase(
 };
 
 const UserModel = mongoose.model('User', UserSchema);
+UserModel.createIndexes();
 
-// Add the email unicity index
-UserModel.collection.createIndex('email', {
-  unique: true,
-  name: 'username_unicity',
-});
-
-// Add the username unicity index
-UserModel.collection.createIndex('username', {
-  unique: true,
-  name: 'email_unicity',
-});
-
-// Create the text indices
-UserModel.collection.createIndex(
-  {
-    email: 'text',
-    username: 'text',
-    'name.first': 'text',
-    'name.last': 'text',
-  },
-  {
-    name: 'text_fields',
-  },
-);
-
-if (config.validations.mondatory.lastIndexOf('phone') >= 0) {
-  UserModel.collection.createIndex(
-    {
-      phone: 1,
-    },
-    {
-      unique: true,
-      partialFilterExpression: {
-        phone: {
-          $exists: true,
-        },
-      },
-    },
-  );
-}
+module.exports = UserModel;
