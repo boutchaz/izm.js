@@ -1,4 +1,4 @@
-const { readFile } = require('fs');
+const { readFile, writeFile } = require('fs');
 const { resolve } = require('path');
 const { promisify } = require('util');
 const { parse } = require('dotenv');
@@ -12,6 +12,7 @@ const ajv = new Ajv();
 const validate = ajv.compile(envSchema);
 
 const readFile$ = promisify(readFile);
+const writeFile$ = promisify(writeFile);
 const DEFAULT_ENV = process.env.NODE_ENV || 'development';
 
 /**
@@ -84,12 +85,51 @@ ERROR : ${JSON.stringify(e)}`);
     }
 
     try {
-      this.values = parse(content);
-      this.loaded = true;
-      return this.values;
+      return parse(content);
     } catch (e) {
       return {};
     }
+  }
+
+  async save() {
+    const { getEnvFilePath } = this.constructor;
+    const path = getEnvFilePath(this.name);
+
+    let values = {};
+    let content = '';
+
+    try {
+      values = await this.load();
+    } catch (e) {
+      values = {};
+    }
+
+    Object.keys(values).forEach((key) => {
+      const found = this.variables.find(v => v.realKey() === key);
+      if (found) {
+        return;
+      }
+
+      if (!content) {
+        content += '# User defined vars\n';
+      }
+
+      content += `${key}=${values[key]}\n`;
+    });
+
+    if (content) {
+      content += '\n';
+    }
+
+    content += this.toString();
+
+    try {
+      await writeFile$(path, content, { encoding: 'utf8' });
+    } catch (e) {
+      return false;
+    }
+
+    return true;
   }
 
   /**
@@ -100,6 +140,7 @@ ERROR : ${JSON.stringify(e)}`);
    */
   set({
     key,
+    value,
     name = key,
     description = '',
     defaultValue,
@@ -120,7 +161,9 @@ ERROR : ${JSON.stringify(e)}`);
 
     const k = variable.realKey();
 
-    if (typeof this.values[k] !== 'undefined') {
+    if (typeof value !== 'undefined') {
+      variable.setValue(value);
+    } else if (typeof this.values[k] !== 'undefined') {
       variable.setValue(this.values[k], true);
     }
 
@@ -152,7 +195,7 @@ ERROR : ${JSON.stringify(e)}`);
       })
       .filter(scope => scope.items.length > 0)
       .forEach((scope, index) => {
-        content += `${index > 0 ? '\n\n' : ''}# ${scope.name}\n`;
+        content += `${index > 0 ? '\n' : ''}# ${scope.name}\n`;
 
         scope.items.forEach((field) => {
           content += `${field.realKey()}=${field.toString()}\n`;
@@ -162,6 +205,9 @@ ERROR : ${JSON.stringify(e)}`);
     return content;
   }
 
+  /**
+   * Get JSON presentation of the current environment
+   */
   toJSON() {
     const json = this.variables.reduce((prevValue, current) => {
       const index = prevValue.findIndex(one => one.name === current.scope);
@@ -192,6 +238,11 @@ ERROR : ${JSON.stringify(e)}`);
     });
   }
 
+  /**
+   * Get the value of an environment variable
+   * @param {String} key The env variable key
+   * @param {String} scope The scope
+   */
   get(key, scope = 'general') {
     const found = this.variables.find(field => field.key === key && field.scope === scope);
 

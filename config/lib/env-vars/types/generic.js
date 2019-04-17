@@ -21,7 +21,7 @@ class GenericField {
     this.name = name || key;
     this.description = description || '';
     this.schema = schema;
-    this.validate = ajv.compile(schema);
+    this.validator = ajv.compile(schema);
 
     if (typeof defaultValue !== 'undefined') {
       this.defaultValue = defaultValue;
@@ -44,7 +44,7 @@ class GenericField {
    * @param {any} value the value to validate
    */
   validate(value) {
-    const isValid = this.validate(value);
+    const isValid = this.validator(value);
     if (!isValid) {
       debug(`Warning: Invalid field value
 KEY         : ${this.key}

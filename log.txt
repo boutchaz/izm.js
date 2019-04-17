@@ -1,0 +1,18 @@
+[33m[nodemon] 1.18.11[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching: **/*.js **/*.swig[39m
+[32m[nodemon] starting `node --inspect .`[39m
+
+********************************** Welcome to **********************************
+      _            _              _     
+     | |          | |            | |    
+   __| | _____   _| |_ ___   ___ | |___ 
+  / _` |/ _ \ \ / | __/ _ \ / _ \| / __|
+ | (_| |  __/\ V /| || (_) | (_) | \__ \
+  \__,_|\___| \_/  \__\___/ \___/|_|___/
+
+[33mWarning: Devtools enabled.
+Please remove it before deploying the application on production.[0m
+
+********************************************************************************
+[0mGET /api/v1/roles [33m403 [0m7.691 ms - 36[0m

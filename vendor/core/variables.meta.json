@@ -1,4 +1,11 @@
 {
+  "PORT": {
+    "name": "Application port",
+    "defaultValue": 3000,
+    "schema": {
+      "type": "integer"
+    }
+  },
   "APP_TITLE": {
     "name": "Application title",
     "defaultValue": "Node boilerplate API"
