@@ -74,7 +74,7 @@ async function sendMail(subject, body, users = []) {
 
   if (isSendGrid) {
     try {
-      const send = util.promisify(sgMail.send);
+      const send = util.promisify(sgMail.send).bind(sgMail);
       const data = await send(msg, false);
       if (Array.isArray(data) && data.length > 0) {
         const [d] = data;
