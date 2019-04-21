@@ -3,7 +3,8 @@
   "version": "0.4.0",
   "private": true,
   "scripts": {
-    "test": "node ./node_modules/.bin/mocha --recursive ./helpers/test-hooks.js ./vendor/*/tests/*.test.js ./modules/*/tests/*.test.js",
+    "test": "mocha --recursive ./helpers/test-hooks.js ./vendor/*/tests/*.test.js",
+    "test:modules": "mocha --recursive ./helpers/test-hooks.js ./modules/*/tests/*.test.js",
     "pretest": "npm run lint",
     "test:watch": "nodemon --watch modules/**/*.js --exec \"npm test\"",
     "format:write": "prettier **/*.{json,md} --write",
@@ -20,7 +21,7 @@
     "release:patch": "release-it patch",
     "webdash": "webdash serve",
     "generate:module": "plop module",
-    "postinstall": "./scripts/install-dependencies.js"
+    "postinstall": "node ./scripts/install-dependencies.js"
   },
   "engines": {
     "node": ">=10.15.3"
