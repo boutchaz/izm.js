@@ -1,7 +1,7 @@
 const { resolve } = require('path');
 const { model } = require('mongoose');
 const { promisify } = require('util');
-const debug = require('debug')('users:bootstraps');
+const debug = require('debug')('modules:users:bootstraps');
 
 const Iam = require('../helpers/iam.server.helper');
 

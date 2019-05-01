@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const debug = require('debug')('helpers:iam');
+const debug = require('debug')('modules:users:helpers:iam');
 const pathToRegexp = require('path-to-regexp');
 
 class Iam {
