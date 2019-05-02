@@ -153,7 +153,7 @@ module.exports.initSession = (app, db) => {
 module.exports.initModulesConfiguration = (app, db) => {
   config.files.server.configs.forEach((configPath) => {
     // eslint-disable-next-line
-    require(path.resolve(configPath))(app, db);
+    require(path.resolve(configPath))(app, db, config);
   });
 };
 

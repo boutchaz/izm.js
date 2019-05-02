@@ -36,6 +36,7 @@ module.exports.start = function start(callback) {
         debug(chalk.green('HTTPs:\t\t\t\ton'));
       }
       debug(chalk.green(`App version:\t\t\t${config.pkg.version}`));
+      debug(chalk.green(`Public address:\t\t${config.app.publicAddress}`));
       debug('--');
 
       if (callback) callback(app, db, config);

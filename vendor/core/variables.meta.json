@@ -10,6 +10,10 @@
     "name": "Application title",
     "defaultValue": "Node boilerplate API"
   },
+  "APP_PUBLIC_ADDRESS": {
+    "name": "Public application address",
+    "defaultValue": ""
+  },
   "APP_DESCRIPTION": {
     "name": "Application description",
     "defaultValue": "Application generated with the awesome boilerplate \"node-boilerplate\""
