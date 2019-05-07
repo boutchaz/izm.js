@@ -1,6 +1,16 @@
 {
   "name": "{{name}}",
   "version": "0.1.0",
+  "license": "ISC",
+  "scripts": {
+    "test": "cd ../.. && mocha --recursive ./helpers/test-hooks.js ./modules/{{name}}/tests/*.test.js",
+    "lint": "eslint .",
+    "format:write": "prettier **/*.{json,md} --write",
+    "format:test": "prettier **/*.{json,md} --list-different",
+    "release:major": "release-it major",
+    "release:minor": "release-it minor",
+    "release:patch": "release-it patch"
+  },
   "description": "The {{name}} module",
   "keywords": [
     "PS",
@@ -9,5 +19,36 @@
     "functional",
     "{{name}}"
   ],
-  "license": "ISC"
+  "devDependencies": {
+    "@commitlint/cli": "^7.6.0",
+    "@commitlint/config-conventional": "^7.6.0",
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.17.2",
+    "husky": "^2.2.0",
+    "lint-staged": "^8.1.5",
+    "mocha": "^6.1.4",
+    "prettier": "^1.17.0",
+    "release-it": "^12.0.1",
+    "supertest": "^4.0.2"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "**/*.{json,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "post-merge": "npm i",
+      "pre-commit": "lint-staged && npm test",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  }
 }
