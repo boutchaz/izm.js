@@ -41,10 +41,7 @@
           "default": "global"
         }
       },
-      "required": [
-        "key",
-        "name"
-      ]
+      "required": ["key", "name"]
     }
   }
 }

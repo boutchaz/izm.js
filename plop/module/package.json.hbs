@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "license": "ISC",
   "scripts": {
-    "test": "cd ../.. && mocha --recursive ./helpers/test-hooks.js ./modules/{{name}}/tests/*.test.js",
+    "test": "node ../../scripts/run-tests {{name}}",
     "lint": "eslint .",
+    "pretest": "npm run lint",
     "format:write": "prettier **/*.{json,md} --write",
-    "format:test": "prettier **/*.{json,md} --list-different",
+    "format:test": "prettier **/*.{json,md} --list-different"{{#if git}},
     "release:major": "release-it major",
     "release:minor": "release-it minor",
-    "release:patch": "release-it patch"
+    "release:patch": "release-it patch"{{/if}}
   },
   "description": "The {{name}} module",
   "keywords": [
@@ -20,19 +21,16 @@
     "{{name}}"
   ],
   "devDependencies": {
-    "@commitlint/cli": "^7.6.0",
+    {{#if git}}"@commitlint/cli": "^7.6.1",
     "@commitlint/config-conventional": "^7.6.0",
-    "chai": "^4.2.0",
-    "eslint": "^5.16.0",
+    "lint-staged": "^8.1.5",
+    "husky": "^2.2.0",
+    "release-it": "^12.0.1",
+    {{/if}}"eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.17.2",
-    "husky": "^2.2.0",
-    "lint-staged": "^8.1.5",
-    "mocha": "^6.1.4",
-    "prettier": "^1.17.0",
-    "release-it": "^12.0.1",
-    "supertest": "^4.0.2"
-  },
+    "prettier": "^1.17.0"
+  }{{#if git}},
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
@@ -50,5 +48,5 @@
       "pre-commit": "lint-staged && npm test",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
-  }
+  }{{/if}}
 }

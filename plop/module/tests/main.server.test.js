@@ -27,14 +27,14 @@ let agent;
 /**
  * Sections tests
  */
-describe('tests', () => {
+describe('tests for module "{{name}}"', () => {
   before(async () => {
     // Get application
     app = await express.init(connection.db);
     agent = request.agent(app);
   });
 
-  describe('Module "{{name}}" is up', () => {
+  describe('"{{name}}" is up', () => {
     it('I am not allowed to call the API if I do not have the IAM "{{name}}:ok"', async () => {
       await createUser(credentials, []);
       await agent.post('/api/v1/auth/signin').send(credentials).expect(200);

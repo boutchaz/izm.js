@@ -2,10 +2,14 @@
 
 const { spawn } = require('child_process');
 const { resolve } = require('path');
+const { platform } = require('os');
 
-const spawn$ = (...args) => new Promise((res) => {
+const npmCmd = platform().startsWith('win') ? 'npm.cmd' : 'npm';
+
+const spawn$ = (...args) => new Promise((fnResolve, fnReject) => {
   const cmd = spawn(...args);
-  cmd.on('close', res);
+  cmd.on('close', fnResolve);
+  cmd.on('error', fnReject);
 });
 
 function camelize(str) {
@@ -26,7 +30,6 @@ module.exports = (plop) => {
         type: 'confirm',
         name: 'git',
         message: 'Init git repository',
-        default: false,
       },
       {
         type: 'confirm',
@@ -37,7 +40,7 @@ module.exports = (plop) => {
     actions: [
       {
         type: 'addMany',
-        templateFiles: 'plop/module/**',
+        templateFiles: 'plop/module/**/*!(*.hbs)',
         destination: 'modules/{{name}}',
         skipIfExists: true,
         base: 'plop/module',
@@ -50,22 +53,30 @@ module.exports = (plop) => {
           return;
         }
         console.log('Initializing git repository');
-        await spawn$('git', ['init'], {
-          cwd: resolve('modules', answers.name),
-          detached: true,
-          stdio: 'inherit',
-        });
+        try {
+          await spawn$('git', ['init'], {
+            cwd: resolve('modules', answers.name),
+            detached: true,
+            stdio: 'inherit',
+          });
+        } catch (e) {
+          console.error(e);
+        }
       },
       async (answers) => {
         if (answers.install !== true) {
           return;
         }
         console.log('Installing dependencies');
-        await spawn$('npm', ['install'], {
-          cwd: resolve('modules', answers.name),
-          detached: true,
-          stdio: 'inherit',
-        });
+        await spawn$(
+          npmCmd,
+          ['install'],
+          {
+            cwd: resolve('modules', answers.name),
+            detached: true,
+            stdio: 'inherit',
+          },
+        );
       },
     ],
   });
