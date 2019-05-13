@@ -20,6 +20,7 @@ cd /mnt/data/back
 git stash
 git checkout $CI_BUILD_REF_NAME
 git stash
+git clean -f
 git pull origin $CI_BUILD_REF_NAME
 npm i
 pm2 restart api

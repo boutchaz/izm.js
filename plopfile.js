@@ -3,8 +3,11 @@
 const { spawn } = require('child_process');
 const { resolve } = require('path');
 const { platform } = require('os');
+const { rename } = require('fs');
+const { promisify } = require('util');
 
 const npmCmd = platform().startsWith('win') ? 'npm.cmd' : 'npm';
+const rename$ = promisify(rename);
 
 const spawn$ = (...args) => new Promise((fnResolve, fnReject) => {
   const cmd = spawn(...args);
@@ -49,8 +52,18 @@ module.exports = (plop) => {
         },
       },
       async (answers) => {
+        const p = resolve('modules', answers.name);
+        try {
+          await rename$(`${p}/package.json.hbs`, `${p}/package.json`);
+          return 'package.json.hbs has been renamed';
+        } catch (e) {
+          console.log(e);
+          return 'Error while renaming package.json.hbs file';
+        }
+      },
+      async (answers) => {
         if (answers.git !== true) {
-          return;
+          return 'Git has been ignored';
         }
         console.log('Initializing git repository');
         try {
@@ -62,10 +75,11 @@ module.exports = (plop) => {
         } catch (e) {
           console.error(e);
         }
+        return 'Git repository has been initialized';
       },
       async (answers) => {
         if (answers.install !== true) {
-          return;
+          return 'Dependencies are ignored';
         }
         console.log('Installing dependencies');
         await spawn$(
@@ -77,6 +91,7 @@ module.exports = (plop) => {
             stdio: 'inherit',
           },
         );
+        return 'Dependencies installed successfully';
       },
     ],
   });
