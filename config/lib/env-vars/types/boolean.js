@@ -5,7 +5,7 @@ const GenericField = require('./generic');
  */
 class BooleanField extends GenericField {
   setValue(value) {
-    this.value = !!value;
+    this.value = value === 'true' || value === true;
 
     return this;
   }

@@ -25,5 +25,5 @@
   "USER_PASSWORD_NEW": "Veuillez fournir un nouveau mot de passe",
   "USER_PROFILE_PIC_INVALID": "Type de fichier non accepté",
   "USER_NOT_LOCAL": "Il semble que vous vous êtes inscrit en utilisant votre compte \"{{provider}}\", connectez-vous en utilisant ce fournisseur.",
-  "USERS_HELLO": "Bonjour"
+  "ROLE_ALREADY_EXISTS": "Rôle déjà existant"
 }

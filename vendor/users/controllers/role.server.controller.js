@@ -90,7 +90,11 @@ exports.verifyExisting = async function verifyExisting(req, res, next) {
     return next(e);
   }
 
-  if (exists.length !== 0) return res.status(400).json('Already exists');
+  if (exists.length !== 0) {
+    return res.status(400).json({
+      message: req.t('ROLE_ALREADY_EXISTS'),
+    });
+  }
   return next();
 };
 

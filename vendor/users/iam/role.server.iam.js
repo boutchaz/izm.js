@@ -27,6 +27,15 @@ module.exports = {
           parents: ['modules:users:roles:manage'],
           middlewares: [ctrl.listRoles],
         },
+        /**
+         * @body
+         * {
+         *   "name": "{{roleName}}",
+         *   "iams": [
+         *
+         *   ]
+         * }
+         */
         post: {
           title: 'Create new role',
           description: 'Creates new role with the given permissions',

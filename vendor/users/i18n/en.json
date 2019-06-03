@@ -27,5 +27,6 @@
   "USER_NOT_LOCAL": "It seems like you signed up using your \"{{provider}}\" account, please sign in using that provider.",
   "SECTION_NOT_CREATED": "Error while creating the section",
   "SECTION_ID_INVALID": "The section ID \"{{id}}\" is invalid!",
-  "SECTION_NOT_FOUND": "The specified section was not found."
+  "SECTION_NOT_FOUND": "The specified section was not found.",
+  "ROLE_ALREADY_EXISTS": "Role already exists"
 }

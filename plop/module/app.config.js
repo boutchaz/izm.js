@@ -1,8 +1,11 @@
+const SCOPE = '{{name}}';
+
 module.exports = (config) => {
-  const res = {};
+  const { env } = config.utils;
 
   return {
-    ...config,
-    ...res,
+    '{{name}}': {
+      exampleVar: env.get('EXAMPLE_KEY', SCOPE),
+    },
   };
 };

@@ -36,7 +36,8 @@ class GenericField {
    */
   realKey() {
     const { scope = 'general', key } = this;
-    return scope === 'general' ? key : `${scope.toUpperCase()}_MODULE_${key}`;
+    const s = scope.toUpperCase().replace(/[- *&?@$]/g, '_');
+    return scope === 'general' ? key : `${s}_MODULE_${key}`;
   }
 
   /**
