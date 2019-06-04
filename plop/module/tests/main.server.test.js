@@ -43,7 +43,7 @@ describe('tests for module "{{name}}"', () => {
 
     it('I am allowed to call the API if I have the IAM "{{name}}:ok"', async () => {
       await createUser(credentials, [
-        '{{name}}:ok',
+        'modules:{{name}}:ok',
       ]);
       await agent.post('/api/v1/auth/signin').send(credentials).expect(200);
       await agent.get(`${prefix}/{{name}}/ok`).expect(200);

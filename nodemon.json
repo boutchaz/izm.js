@@ -1,4 +1,4 @@
 {
   "watch": ["**/*.js", "**/*.swig"],
-  "ignore": [".git/*", "node_modules/*"]
+  "ignore": [".git/*", "node_modules/*", "modules/*"]
 }
