@@ -6,3 +6,4 @@ assets/
 .nyc_output/
 public/
 modules/
+plop/

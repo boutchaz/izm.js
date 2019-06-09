@@ -9,7 +9,7 @@ module.exports = {
     path: '/ok',
     methods: {
       get: {
-        iam: '{{name}}:ok',
+        iam: 'modules:{{name}}:ok',
         title: '{{name}} is ready',
         parents: ['modules:{{name}}'],
         groups: [],

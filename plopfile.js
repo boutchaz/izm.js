@@ -3,11 +3,8 @@
 const { spawn } = require('child_process');
 const { resolve } = require('path');
 const { platform } = require('os');
-const { rename } = require('fs');
-const { promisify } = require('util');
 
 const npmCmd = platform().startsWith('win') ? 'npm.cmd' : 'npm';
-const rename$ = promisify(rename);
 
 const spawn$ = (...args) => new Promise((fnResolve, fnReject) => {
   const cmd = spawn(...args);
@@ -17,6 +14,12 @@ const spawn$ = (...args) => new Promise((fnResolve, fnReject) => {
 
 function camelize(str) {
   return str.replace(/\W+(.)/g, (match, chr) => chr.toUpperCase());
+}
+
+function getKey(txt) {
+  return typeof txt === 'string' && txt.match(/[- ]/)
+    ? `'${txt}'`
+    : txt;
 }
 
 module.exports = (plop) => {
@@ -50,16 +53,6 @@ module.exports = (plop) => {
         globOptions: {
           dot: true,
         },
-      },
-      async (answers) => {
-        const p = resolve('modules', answers.name);
-        try {
-          await rename$(`${p}/package.json.hbs`, `${p}/package.json`);
-          return 'package.json.hbs has been renamed';
-        } catch (e) {
-          console.log(e);
-          return 'Error while renaming package.json.hbs file';
-        }
       },
       async (answers) => {
         if (answers.git !== true) {
@@ -97,6 +90,7 @@ module.exports = (plop) => {
   });
 
   // Create the camelize helper
-  plop.setHelper('camelize', txt => camelize(txt));
+  plop.setHelper('camelize', camelize);
   plop.setHelper('raw-helper', options => options.fn());
+  plop.setHelper('get-key', getKey);
 };
