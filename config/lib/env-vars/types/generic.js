@@ -11,10 +11,11 @@ const ajv = new Ajv();
 class GenericField {
   constructor({
     key,
+    field,
     name = key,
+    defaultValue,
     scope = 'general',
     description = '',
-    defaultValue,
   }, schema = { type: 'string' }) {
     this.scope = scope;
     this.key = key;
@@ -22,6 +23,7 @@ class GenericField {
     this.description = description || '';
     this.schema = schema;
     this.validator = ajv.compile(schema);
+    this.field = field;
 
     if (typeof defaultValue !== 'undefined') {
       this.defaultValue = defaultValue;
@@ -110,6 +112,7 @@ ERRORS      : ${JSON.stringify(this.validate.errors, null, '  ')}
       name: this.name,
       value: this.getValue(),
       schema: this.schema,
+      field: this.field,
       description: this.description,
       defaultValue: this.defaultValue,
     };

@@ -141,9 +141,10 @@ ERROR : ${JSON.stringify(e)}`);
   set({
     key,
     value,
+    field,
     name = key,
-    description = '',
     defaultValue,
+    description = '',
   }, schema = { type: 'string' }, scope = 'general') {
     let variable = this.variables.find(v => v.scope === scope && v.key === key);
 
@@ -152,6 +153,7 @@ ERROR : ${JSON.stringify(e)}`);
         key,
         name,
         scope,
+        field,
         description,
         defaultValue,
       }, schema);
