@@ -14,10 +14,8 @@
   },
   "description": "The {{name}} module",
   "keywords": [
-    "PS",
-    "module",
-    "wakanda",
-    "functional",
+    "fm",
+    "functional-module",
     "{{name}}"
   ],
   "devDependencies": {
