@@ -4,8 +4,8 @@
     "prefix": "iam",
     "body": [
       "/**",
-      "* @type { IAM.default }",
-      "*/",
+      " * @type { IAM.default }",
+      " */",
       "module.exports = {",
       "\tprefix: '/$1',",
       "\troutes: [{",
