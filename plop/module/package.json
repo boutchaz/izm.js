@@ -16,7 +16,7 @@
   "keywords": [
     "{{name}}",
     "boilerplate-fm",
-    "functional-module",
+    "functional-module"
   ],
   "devDependencies": {
     {{#if git}}"@commitlint/cli": "^7.6.1",
