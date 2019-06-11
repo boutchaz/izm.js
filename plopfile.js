@@ -3,8 +3,11 @@
 const { spawn } = require('child_process');
 const { resolve } = require('path');
 const { platform } = require('os');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const ora = require('ora');
 
 const npmCmd = platform().startsWith('win') ? 'npm.cmd' : 'npm';
+const spinner = ora('Installing NPM dependencies');
 
 const spawn$ = (...args) => new Promise((fnResolve, fnReject) => {
   const cmd = spawn(...args);
@@ -74,16 +77,18 @@ module.exports = (plop) => {
         if (answers.install !== true) {
           return 'Dependencies are ignored';
         }
-        console.log('Installing dependencies');
+
+        spinner.start();
         await spawn$(
           npmCmd,
           ['install'],
           {
             cwd: resolve('modules', answers.name),
             detached: true,
-            stdio: 'inherit',
+            stdio: 'ignore',
           },
         );
+        spinner.stop();
         return 'Dependencies installed successfully';
       },
     ],
