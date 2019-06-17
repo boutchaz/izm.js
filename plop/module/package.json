@@ -19,8 +19,8 @@
     "functional-module"
   ],
   "devDependencies": {
-    {{#if git}}"@commitlint/cli": "^7.6.1",
-    "@commitlint/config-conventional": "^7.6.0",
+    {{#if git}}"@commitlint/cli": "^8.0.0",
+    "@commitlint/config-conventional": "^8.0.0",
     "lint-staged": "^8.1.5",
     "husky": "^2.2.0",
     "release-it": "^12.0.1",
