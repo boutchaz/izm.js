@@ -2,24 +2,27 @@
  * Module dependencies.
  */
 const config = require('..');
-const express = require('express');
-const debug = require('debug')('config:express');
-const morgan = require('morgan');
-const logger = require('./logger');
-const bodyParser = require('body-parser');
-const session = require('express-session');
-const MongoStore = require('connect-mongo')(session);
-const compress = require('compression');
-const methodOverride = require('method-override');
-const cookieParser = require('cookie-parser');
-const helmet = require('helmet');
-const flash = require('connect-flash');
-const path = require('path');
-const i18next = require('i18next');
 const i18nextMiddleware = require('i18next-express-middleware');
 const Backend = require('i18next-node-fs-backend');
-const fs = require('fs');
+const debug = require('debug')('config:express');
+const methodOverride = require('method-override');
+const { lstatSync, readdirSync } = require('fs');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const compress = require('compression');
+const flash = require('connect-flash');
 const nunjucks = require('nunjucks');
+const i18next = require('i18next');
+const express = require('express');
+const morgan = require('morgan');
+const helmet = require('helmet');
+const path = require('path');
+const { connection } = require('mongoose');
+
+const MongoStore = require('connect-mongo')(session);
+
+const logger = require('./logger');
 
 const { vendor, custom } = config.files.server.modules;
 
@@ -125,7 +128,7 @@ module.exports.initViewEngine = (app) => {
 /**
  * Configure Express session
  */
-module.exports.initSession = (app, db) => {
+module.exports.initSession = (app) => {
   // Express MongoDB session storage
   app.use(session({
     saveUninitialized: true,
@@ -138,8 +141,8 @@ module.exports.initSession = (app, db) => {
     },
     name: config.sessionKey,
     store: new MongoStore({
-      db,
       collection: config.sessionCollection,
+      mongooseConnection: connection,
     }),
   }));
 
@@ -198,12 +201,11 @@ module.exports.initI18n = (app) => {
 
   const getDirsNames = () => {
     const modules = [vendor, ...custom];
-    const names = modules.map(source => fs
-      .readdirSync(source)
+    const names = modules.map(source => readdirSync(source)
       .map((name) => {
         const p = path.join(source, name);
 
-        if (!fs.lstatSync(p).isDirectory()) {
+        if (!lstatSync(p).isDirectory()) {
           return false;
         }
 
