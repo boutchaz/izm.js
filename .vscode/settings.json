@@ -1,4 +1,7 @@
 {
   "eslint.autoFixOnSave": true,
-  "files.eol": "\n"
+  "files.eol": "\n",
+  "files.exclude": {
+    "db/**": true
+  }
 }

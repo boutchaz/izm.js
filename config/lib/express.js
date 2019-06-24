@@ -232,6 +232,7 @@ module.exports.initI18n = (app) => {
  */
 module.exports.initErrorRoutes = (app) => {
   app.use((err, req, res, next) => {
+    const { options } = req.i18n;
     // If the error object doesn't exists
     if (!err) {
       return next();
@@ -240,9 +241,11 @@ module.exports.initErrorRoutes = (app) => {
     // Log it
     console.error(err.stack);
 
+    options.defaultNS = 'vendor:core';
+
     // Redirect to error page
     return res.status(500).render(`${vendor}/core/views/500`, {
-      error: req.t('ERRORS_500'),
+      error: req.t('ERROR_500'),
     });
   });
 };
