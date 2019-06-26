@@ -1,5 +1,6 @@
 const Ajv = require('ajv');
 const debug = require('debug')('boilerplate:helpers:utils:env:field');
+const { red } = require('chalk');
 
 const ajv = new Ajv();
 
@@ -76,7 +77,8 @@ ERRORS      : ${JSON.stringify(this.validate.errors, null, '  ')}
     const isValid = this.validate(value);
 
     if (!isValid && isForce !== true) {
-      throw this.validate.errors;
+      console.error(red(`"${this.key}" can not have the value "${value}"`));
+      throw new Error(this.validator.errors);
     }
 
     this.value = value;
