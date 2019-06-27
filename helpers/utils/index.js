@@ -2,8 +2,13 @@
 const Ajv = require('ajv');
 const { model } = require('mongoose');
 const debug = require('debug')('boilerplate:helpers:utils');
+const { resolve } = require('path');
+const { readFile } = require('fs');
+const { promisify } = require('util');
 
 const roleCache = {};
+let excludeCache;
+const readFile$ = promisify(readFile);
 
 /**
  * Validates a payload with a given schema
@@ -108,4 +113,41 @@ exports.createUser = async (
   }).save();
 
   return user;
+};
+
+/**
+ * Check an IAM if it is exluded or not
+ * @param {Object} iam The IAM object
+ */
+exports.isExcluded = async ({ iam, parents = [] }) => {
+  if (!excludeCache) {
+    const content = await readFile$(resolve('.api.exclude'), { encoding: 'utf8' });
+    excludeCache = content.split('\n')
+      .map(one => one.trim())
+      .filter(one => Boolean(one) && !one.startsWith('#'));
+  }
+
+  let found = excludeCache.includes(iam);
+
+  if (found) {
+    return {
+      found: true,
+      reason: 'iam',
+      data: iam,
+    };
+  }
+
+  found = excludeCache.find(one => parents.includes(one));
+
+  if (found) {
+    return {
+      found: true,
+      reason: 'parent',
+      data: found,
+    };
+  }
+
+  return {
+    found: false,
+  };
 };

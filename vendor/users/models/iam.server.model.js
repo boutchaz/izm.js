@@ -38,6 +38,10 @@ const IAMSchema = new Schema({
     }],
     default: [],
   },
+  excluded: {
+    type: Boolean,
+    default: false,
+  },
   groups: {
     type: [{
       type: String,

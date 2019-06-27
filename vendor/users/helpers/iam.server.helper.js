@@ -23,6 +23,10 @@ class Iam {
       iam,
     };
 
+    if (typeof opts.excluded === 'boolean') {
+      obj.excluded = opts.excluded;
+    }
+
     if (typeof opts.affectable === 'boolean') {
       obj.affectable = opts.affectable;
     }

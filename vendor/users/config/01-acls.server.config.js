@@ -1,6 +1,8 @@
 const chalk = require('chalk');
 const { resolve } = require('path');
 const express = require('express');
+// eslint-disable-next-line import/no-unresolved
+const { isExcluded } = require('utils');
 
 const Iam = require('../helpers/iam.server.helper');
 
@@ -29,6 +31,7 @@ module.exports = (app) => {
   });
 
   function isAllowed() {
+    let allIAMs;
     return async (req, res, next) => {
       const { iams, user } = req;
       const roles = user && Array.isArray(user.roles) ? user.roles : ['guest'];
@@ -46,6 +49,25 @@ module.exports = (app) => {
 
       if (index >= 0) {
         return next();
+      }
+
+      if (!allIAMs) {
+        try {
+          allIAMs = await iam.IamModel.find();
+        } catch (e) {
+          // Do nothing, proceed
+        }
+      }
+
+      const found = (allIAMs || []).find(one => one.resource
+        && new RegExp(one.resource).test(req.baseUrl + req.route.path)
+        && one.permission === req.method.toLowerCase()
+        && !one.excluded);
+
+      if (!found) {
+        return res.status(404).json({
+          message: 'Not Found',
+        });
       }
 
       if (roles.length <= 1 && (!roles[0] || roles[0] === 'guest')) {
@@ -120,7 +142,17 @@ module.exports = (app) => {
 
             try {
               // Add the method middleware
-              routeTmp[k](method.middlewares);
+              const { found, reason, data } = await isExcluded(method);
+              if (!found) {
+                routeTmp[k](method.middlewares);
+              } else {
+                console.info(chalk.yellow(`
+IAM  excluded:
+IAM     : ${method.iam}
+Reason  : ${reason}
+Data    : ${data}
+`));
+              }
             } catch (e) {
               const routes = method.middlewares.map((middleware) => {
                 const result = typeof middleware === 'function' ? '⨍' : 'null';
