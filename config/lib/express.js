@@ -1,7 +1,6 @@
 /**
  * Module dependencies.
  */
-const config = require('..');
 const i18nextMiddleware = require('i18next-express-middleware');
 const Backend = require('i18next-node-fs-backend');
 const debug = require('debug')('config:express');
@@ -21,6 +20,7 @@ const path = require('path');
 const { connection } = require('mongoose');
 
 const MongoStore = require('connect-mongo')(session);
+const config = require('..');
 
 const logger = require('./logger');
 
@@ -232,6 +232,7 @@ module.exports.initI18n = (app) => {
  */
 module.exports.initErrorRoutes = (app) => {
   app.use((err, req, res, next) => {
+    const { options } = req.i18n;
     // If the error object doesn't exists
     if (!err) {
       return next();
@@ -240,9 +241,11 @@ module.exports.initErrorRoutes = (app) => {
     // Log it
     console.error(err.stack);
 
+    options.defaultNS = 'vendor:core';
+
     // Redirect to error page
     return res.status(500).render(`${vendor}/core/views/500`, {
-      error: req.t('ERRORS_500'),
+      error: req.t('ERROR_500'),
     });
   });
 };

@@ -2,6 +2,8 @@ const { resolve } = require('path');
 const { model } = require('mongoose');
 const { promisify } = require('util');
 const debug = require('debug')('modules:users:bootstraps');
+// eslint-disable-next-line import/no-unresolved
+const { isExcluded } = require('utils');
 
 const Iam = require('../helpers/iam.server.helper');
 
@@ -26,6 +28,8 @@ async function seedIAMs() {
       const routes$ = m.routes.map(async (route) => {
         const methods$ = Object.keys(route.methods).map(async (k) => {
           const method = route.methods[k];
+          const { found } = await isExcluded(method);
+
           // Add the policies
           await iam.allow(
             (m.is_global === true ? '' : config.prefix) + m.prefix + route.path,
@@ -34,6 +38,7 @@ async function seedIAMs() {
             {
               ...route.methods[k],
               module: exec ? exec[1] : '',
+              excluded: found,
             },
           );
         });
