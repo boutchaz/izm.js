@@ -3,11 +3,12 @@
 /**
  * Module dependencies.
  */
+const chalk = require('chalk');
+const debug = require('debug')('config:lib:app');
+
 const config = require('..');
 const mongoose = require('./mongoose');
 const express = require('./express');
-const chalk = require('chalk');
-const debug = require('debug')('config:lib:app');
 
 mongoose.loadModels();
 

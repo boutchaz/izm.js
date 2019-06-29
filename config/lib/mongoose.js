@@ -2,10 +2,10 @@
 /**
  * Module dependencies.
  */
-const config = require('..');
 const chalk = require('chalk');
 const path = require('path');
 const mongoose = require('mongoose');
+const config = require('..');
 
 // Load the mongoose models
 module.exports.loadModels = (callback) => {

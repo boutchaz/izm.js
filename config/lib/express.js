@@ -1,7 +1,6 @@
 /**
  * Module dependencies.
  */
-const config = require('..');
 const i18nextMiddleware = require('i18next-express-middleware');
 const Backend = require('i18next-node-fs-backend');
 const debug = require('debug')('config:express');
@@ -21,6 +20,7 @@ const path = require('path');
 const { connection } = require('mongoose');
 
 const MongoStore = require('connect-mongo')(session);
+const config = require('..');
 
 const logger = require('./logger');
 

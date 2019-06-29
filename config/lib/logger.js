@@ -1,8 +1,8 @@
 const _ = require('lodash');
-const config = require('..');
 const chalk = require('chalk');
 const fileStreamRotator = require('file-stream-rotator');
 const fs = require('fs');
+const config = require('..');
 
 // list of valid formats for the logging
 const validFormats = ['combined', 'common', 'dev', 'short', 'tiny'];
