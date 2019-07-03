@@ -21,13 +21,13 @@
   "devDependencies": {
     {{#if git}}"@commitlint/cli": "^8.0.0",
     "@commitlint/config-conventional": "^8.0.0",
-    "lint-staged": "^8.1.5",
-    "husky": "^2.5.0",
-    "release-it": "^12.0.1",
-    {{/if}}"eslint": "^6.0.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.17.2",
-    "prettier": "^1.17.0"
+    "lint-staged": "^9.0.2",
+    "husky": "^3.0.0",
+    "release-it": "^12.3.0",
+    {{/if}}"eslint": "^6.0.1",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-plugin-import": "^2.18.0",
+    "prettier": "^1.18.2"
   }{{#if git}},
   "commitlint": {
     "extends": [
