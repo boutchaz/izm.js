@@ -121,7 +121,13 @@ exports.createUser = async (
  */
 exports.isExcluded = async ({ iam, parents = [] }) => {
   if (!excludeCache) {
-    const content = await readFile$(resolve('.api.exclude'), { encoding: 'utf8' });
+    let content = '';
+    try {
+      content = await readFile$(resolve('.api.exclude'), { encoding: 'utf8' });
+    } catch (e) {
+      // Ignore, just proceed
+    }
+
     excludeCache = content.split('\n')
       .map(one => one.trim())
       .filter(one => Boolean(one) && !one.startsWith('#'));
