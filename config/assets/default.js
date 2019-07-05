@@ -37,5 +37,9 @@ module.exports = {
       `${vendor}/*/variables.meta.json`,
       ...custom.map(m => `${m}/*/variables.meta.json`),
     ],
+    sockets: [
+      `${vendor}/*/sockets/**/*.server.socket.js`,
+      ...custom.map(m => `${m}/*/sockets/**/*.server.socket.js`),
+    ],
   },
 };

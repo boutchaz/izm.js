@@ -2,12 +2,15 @@
  * Module dependencies.
  */
 const i18nextMiddleware = require('i18next-express-middleware');
+const { lstatSync, readdirSync, readFileSync } = require('fs');
+const { createServer: createHTTPsServer } = require('https');
+const { createServer: createHTTPServer } = require('http');
 const Backend = require('i18next-node-fs-backend');
-const debug = require('debug')('config:express');
 const methodOverride = require('method-override');
-const { lstatSync, readdirSync } = require('fs');
+const debug = require('debug')('config:express');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const { connection } = require('mongoose');
 const bodyParser = require('body-parser');
 const compress = require('compression');
 const flash = require('connect-flash');
@@ -16,13 +19,13 @@ const i18next = require('i18next');
 const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
-const path = require('path');
-const { connection } = require('mongoose');
+const { resolve, join } = require('path');
 
 const MongoStore = require('connect-mongo')(session);
 const config = require('..');
 
 const logger = require('./logger');
+const socketIO = require('./socket.io');
 
 const { vendor, custom } = config.files.server.modules;
 
@@ -46,12 +49,23 @@ module.exports.initLocalVariables = (app) => {
 };
 
 /**
+ * Configure Socket.io
+ */
+module.exports.configureSocketIO = (app) => {
+  // Load the Socket.io configuration
+  const server = socketIO(app);
+
+  // Return server object
+  return server;
+};
+
+/**
  * Run bootstrap files
  */
 module.exports.runBootstrap = (app, db) => {
   const promises = config.files.server.bootstraps.map(async (f) => {
     // eslint-disable-next-line
-    const m = require(path.resolve(f));
+    const m = require(resolve(f));
 
     if (typeof m === 'function') {
       try {
@@ -156,7 +170,7 @@ module.exports.initSession = (app) => {
 module.exports.initModulesConfiguration = (app, db) => {
   config.files.server.configs.forEach((configPath) => {
     // eslint-disable-next-line
-    require(path.resolve(configPath))(app, db, config);
+    require(resolve(configPath))(app, db, config);
   });
 };
 
@@ -181,13 +195,70 @@ module.exports.initModulesServerRoutes = (app) => {
   // Globbing routing files
   config.files.server.routes.forEach((routePath) => {
     // eslint-disable-next-line
-    const m = require(path.resolve(routePath));
+    const m = require(resolve(routePath));
     if (typeof m === 'function') {
       m(app);
     } else {
       app.use(config.prefix + m.prefix, m.router(app));
     }
   });
+};
+
+module.exports.createServer = (app) => {
+  let server;
+  if (config.secure && config.secure.ssl === true) {
+    // Load SSL key and certificate
+    const privateKey = readFileSync(resolve(config.secure.privateKey), 'utf8');
+    const certificate = readFileSync(resolve(config.secure.certificate), 'utf8');
+    let caBundle;
+
+    try {
+      caBundle = readFileSync(resolve(config.secure.caBundle), 'utf8');
+    } catch (err) {
+      console.warn('Warning: couldn\'t find or read caBundle file');
+    }
+
+    const options = {
+      key: privateKey,
+      cert: certificate,
+      ca: caBundle,
+      //  requestCert : true,
+      //  rejectUnauthorized : true,
+      secureProtocol: 'TLSv1_method',
+      ciphers: [
+        'ECDHE-RSA-AES128-GCM-SHA256',
+        'ECDHE-ECDSA-AES128-GCM-SHA256',
+        'ECDHE-RSA-AES256-GCM-SHA384',
+        'ECDHE-ECDSA-AES256-GCM-SHA384',
+        'DHE-RSA-AES128-GCM-SHA256',
+        'ECDHE-RSA-AES128-SHA256',
+        'DHE-RSA-AES128-SHA256',
+        'ECDHE-RSA-AES256-SHA384',
+        'DHE-RSA-AES256-SHA384',
+        'ECDHE-RSA-AES256-SHA256',
+        'DHE-RSA-AES256-SHA256',
+        'HIGH',
+        '!aNULL',
+        '!eNULL',
+        '!EXPORT',
+        '!DES',
+        '!RC4',
+        '!MD5',
+        '!PSK',
+        '!SRP',
+        '!CAMELLIA',
+      ].join(':'),
+      honorCipherOrder: true,
+    };
+
+    // Create new HTTPS Server
+    server = createHTTPsServer(options, app);
+  } else {
+    // Create a new HTTP server
+    server = createHTTPServer(app);
+  }
+
+  return server;
 };
 
 /**
@@ -203,7 +274,7 @@ module.exports.initI18n = (app) => {
     const modules = [vendor, ...custom];
     const names = modules.map(source => readdirSync(source)
       .map((name) => {
-        const p = path.join(source, name);
+        const p = join(source, name);
 
         if (!lstatSync(p).isDirectory()) {
           return false;
@@ -250,6 +321,7 @@ module.exports.initErrorRoutes = (app) => {
   });
 };
 
+
 /**
  * Initialize the Express application
  */
@@ -287,5 +359,10 @@ module.exports.init = async (db) => {
   // Initialize error routes
   this.initErrorRoutes(app);
 
-  return app;
+  const server = this.createServer(app);
+
+  // Configure Socket.io
+  this.configureSocketIO(server);
+
+  return server;
 };

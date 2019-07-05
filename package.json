@@ -22,6 +22,7 @@
     "release:patch": "release-it patch",
     "webdash": "webdash serve",
     "generate:module": "plop module",
+    "generate:certs": "scripts/generate-ssl-certs.sh",
     "postinstall": "node ./scripts/install-dependencies.js"
   },
   "engines": {
@@ -58,6 +59,7 @@
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "path-to-regexp": "^3.0.0",
+    "socket.io": "^2.2.0",
     "twilio": "^3.33.0",
     "validator": "^11.0.0"
   },

@@ -27,15 +27,17 @@ module.exports.init = function init(callback) {
 module.exports.start = function start(callback) {
   this.init((app, db) => {
     // Start the app by listening on <port>
-    app.listen(config.port, () => {
+    const server = app.listen(config.port, config.host, () => {
+      const { port, address } = server.address();
       // Logging initialization
       debug('--');
-      debug(chalk.green(`Environment:\t\t\t${process.env.NODE_ENV}`));
-      debug(chalk.green(`Port:\t\t\t\t${config.port}`));
-      debug(chalk.green(`Database:\t\t\t${config.db.uri}`));
-      if (process.env.NODE_ENV === 'secure') {
+      const addr = `http${config.secure && config.secure.ssl ? 's' : ''}://${address}:${port}`;
+      debug(chalk.green(`Address:\t\t\t${addr}`));
+      if (config.secure.ssl) {
         debug(chalk.green('HTTPs:\t\t\t\ton'));
       }
+      debug(chalk.green(`Database:\t\t\t${config.db.uri}`));
+      debug(chalk.green(`Environment:\t\t\t${process.env.NODE_ENV}`));
       debug(chalk.green(`App version:\t\t\t${config.pkg.version}`));
       debug(chalk.green(`Public address:\t\t${config.app.publicAddress}`));
       debug('--');

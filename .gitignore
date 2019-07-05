@@ -14,6 +14,7 @@
 /.env/*
 /lib/*
 /modules/*
+/config/sslcerts/*
 .DS_Store
 
 # Logs
