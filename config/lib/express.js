@@ -25,7 +25,6 @@ const MongoStore = require('connect-mongo')(session);
 const config = require('..');
 
 const logger = require('./logger');
-const socketIO = require('./socket.io');
 
 const { vendor, custom } = config.files.server.modules;
 
@@ -46,17 +45,6 @@ module.exports.initLocalVariables = (app) => {
     res.locals.url = `${req.protocol}://${req.headers.host}${req.originalUrl}`;
     next();
   });
-};
-
-/**
- * Configure Socket.io
- */
-module.exports.configureSocketIO = (app) => {
-  // Load the Socket.io configuration
-  const server = socketIO(app);
-
-  // Return server object
-  return server;
 };
 
 /**
@@ -359,10 +347,6 @@ module.exports.init = async (db) => {
   // Initialize error routes
   this.initErrorRoutes(app);
 
-  const server = this.createServer(app);
-
-  // Configure Socket.io
-  this.configureSocketIO(server);
-
-  return server;
+  // create the server, then return the instance
+  return this.createServer(app);
 };

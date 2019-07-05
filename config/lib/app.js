@@ -9,6 +9,7 @@ const debug = require('debug')('config:lib:app');
 const config = require('..');
 const mongoose = require('./mongoose');
 const express = require('./express');
+const socketIO = require('./socket.io');
 
 mongoose.loadModels();
 
@@ -24,10 +25,24 @@ module.exports.init = function init(callback) {
   });
 };
 
+/**
+ * Configure Socket.io
+ */
+module.exports.configureSocketIO = (app) => {
+  // Load the Socket.io configuration
+  const server = socketIO(app);
+
+  // Return server object
+  return server;
+};
+
 module.exports.start = function start(callback) {
   this.init((app, db) => {
     // Start the app by listening on <port>
     const server = app.listen(config.port, config.host, () => {
+      // Configure Socket.io
+      this.configureSocketIO(server);
+
       const { port, address } = server.address();
       // Logging initialization
       debug('--');

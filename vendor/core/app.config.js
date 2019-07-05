@@ -24,6 +24,7 @@ module.exports = (config) => {
     port,
     secure,
     prefix: env.get('APP_PREFIX'),
+    publicSockets: env.get('PUBLIC_SOCKET'),
     sessionCookie: {
       maxAge: env.get('MAX_AGE', 'sessions'),
       httpOnly: env.get('HTTP_ONLY', 'sessions'),

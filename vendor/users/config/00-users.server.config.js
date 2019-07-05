@@ -5,10 +5,10 @@
  */
 const passport = require('passport');
 const mongoose = require('mongoose');
-const path = require('path');
+const { resolve, join } = require('path');
 
 const User = mongoose.model('User');
-const config = require(path.resolve('./config'));
+const config = require(resolve('./config'));
 
 /**
  * Module init function.
@@ -31,8 +31,8 @@ module.exports = (app) => {
   });
 
   // Initialize strategies
-  config.utils.getGlobbedPaths(path.join(__dirname, './strategies/**/*.js')).forEach((strategy) => {
-    require(path.resolve(strategy))(config);
+  config.utils.getGlobbedPaths(join(__dirname, './strategies/**/*.js')).forEach((strategy) => {
+    require(resolve(strategy))(config);
   });
 
   // Add passport's middleware

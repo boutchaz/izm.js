@@ -16,6 +16,13 @@
     "name": "Application prefix",
     "defaultValue": "/api/v1"
   },
+  "PUBLIC_SOCKET": {
+    "name": "Only authenticated users can use sockets",
+    "defaultValue": true,
+    "schema": {
+      "type": "boolean"
+    }
+  },
   "APP_PUBLIC_ADDRESS": {
     "name": "Public application address",
     "description": "Used to specify the public domain address of the application",

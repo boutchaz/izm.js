@@ -145,6 +145,9 @@ function initGlobalConfigFiles(config, assets) {
 
         // Setting Bootstrap files
         bootstraps: getGlobbedPaths(assets.server.bootstraps),
+
+        // Setting Bootstrap files
+        sockets: getGlobbedPaths(assets.server.sockets),
       },
     },
   });

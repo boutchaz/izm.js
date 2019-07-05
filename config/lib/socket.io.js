@@ -9,9 +9,9 @@ const MongoStore = require('connect-mongo')(session);
 const config = require('..');
 
 // Define the Socket.io configuration method
-module.exports = (app) => {
+module.exports = (server) => {
   // Create a new Socket.io server
-  const io = socketio.listen(app);
+  const io = socketio.listen(server);
 
   // Create a MongoDB storage object
   const mongoStore = new MongoStore({
@@ -41,8 +41,10 @@ module.exports = (app) => {
 
         // Use Passport to populate the user details
         return passport.initialize()(socket.request, {}, () => {
-          passport.session()(socket.request, {}, () => {
-            if (socket.request.user) {
+          passport.session()(socket.request, {}, async () => {
+            const { request: req } = socket;
+
+            if (req.user || config.publicSockets) {
               next(null, true);
             } else {
               next(new Error('User is not authenticated'), false);
@@ -62,5 +64,5 @@ module.exports = (app) => {
   });
 
   // return server;
-  return app;
+  return server;
 };
