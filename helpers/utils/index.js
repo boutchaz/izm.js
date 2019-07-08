@@ -161,4 +161,45 @@ exports.isExcluded = async ({ iam, parents = [] }) => {
   };
 };
 
+/**
+ * Add an IAM to roles
+ * @param { String } iamName The iam name
+ * @param { Array[String] } roles List of roles
+ * @param { Number } tries Number of tries
+ */
+exports.addIamToRoles = async (iamName, roles = ['guest', 'user'], tries = 100) => {
+  const Role = model('Role');
+  const Iam = model('IAM');
+
+  let iam = await Iam.findOne({ iam: iamName });
+  let counter = tries;
+
+  const interval = setInterval(async () => {
+    if (iam) {
+      const { _id: id } = iam;
+      roles.map(async (r) => {
+        try {
+          await Role.findOneAndUpdate({
+            name: r,
+          }, {
+            $addToSet: {
+              iams: id,
+            },
+          });
+        } catch (e) {
+          // Do nothing, just proceed
+        }
+      });
+    }
+
+    if (iam || counter === 0) {
+      clearInterval(interval);
+      return;
+    }
+
+    iam = await Iam.findOne({ iam: iamName });
+    counter -= 1;
+  }, 100);
+};
+
 exports.getIO = () => sockets.io;
