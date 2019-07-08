@@ -6,6 +6,9 @@ const { resolve } = require('path');
 const { readFile } = require('fs');
 const { promisify } = require('util');
 
+// eslint-disable-next-line import/no-dynamic-require
+const sockets = require(resolve('config/lib/socket.io'));
+
 const roleCache = {};
 let excludeCache;
 const readFile$ = promisify(readFile);
@@ -21,7 +24,7 @@ exports.validate = schema => async function validateSchema(req, res, next) {
   if (validate(req.body)) {
     return next();
   }
-  // return next(new Error(JSON.stringify(validate.errors)));
+
   return res.status(400).json({
     error: true,
     message: validate.errors,
@@ -157,3 +160,5 @@ exports.isExcluded = async ({ iam, parents = [] }) => {
     found: false,
   };
 };
+
+exports.getIO = () => sockets.io;
