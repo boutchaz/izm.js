@@ -41,5 +41,9 @@ module.exports = {
       `${vendor}/*/sockets/**/*.server.socket.js`,
       ...custom.map(m => `${m}/*/sockets/**/*.server.socket.js`),
     ],
+    socketsConfig: [
+      `${vendor}/*/sockets/**/*.server.socket.config.js`,
+      ...custom.map(m => `${m}/*/sockets/**/*.server.socket.config.js`),
+    ],
   },
 };
