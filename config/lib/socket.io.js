@@ -68,11 +68,16 @@ exports.init = (server) => {
     });
   });
 
+  config.files.server.socketsConfig.forEach((c) => {
+    // eslint-disable-next-line import/no-dynamic-require,global-require
+    require(resolve(c))(io);
+  });
+
   // Add an event listener to the 'connection' event
   io.on('connection', (socket) => {
-    config.files.server.sockets.forEach((socketConfiguration) => {
+    config.files.server.sockets.forEach((c) => {
       // eslint-disable-next-line import/no-dynamic-require,global-require
-      require(resolve(socketConfiguration))(io, socket);
+      require(resolve(c))(io, socket);
     });
   });
 
