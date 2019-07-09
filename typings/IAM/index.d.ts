@@ -37,7 +37,7 @@ declare namespace IAM {
     /**
      * List of the middlewares to be executed
      */
-    middlewares: Middleware[];
+    middleware: Middleware;
   }
 
   interface Route {
