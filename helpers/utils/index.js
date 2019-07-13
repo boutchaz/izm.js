@@ -6,6 +6,9 @@ const { resolve } = require('path');
 const { readFile } = require('fs');
 const { promisify } = require('util');
 
+// eslint-disable-next-line import/no-dynamic-require
+const sockets = require(resolve('config/lib/socket.io'));
+
 const roleCache = {};
 let excludeCache;
 const readFile$ = promisify(readFile);
@@ -21,7 +24,7 @@ exports.validate = schema => async function validateSchema(req, res, next) {
   if (validate(req.body)) {
     return next();
   }
-  // return next(new Error(JSON.stringify(validate.errors)));
+
   return res.status(400).json({
     error: true,
     message: validate.errors,
@@ -157,3 +160,46 @@ exports.isExcluded = async ({ iam, parents = [] }) => {
     found: false,
   };
 };
+
+/**
+ * Add an IAM to roles
+ * @param { String } iamName The iam name
+ * @param { Array[String] } roles List of roles
+ * @param { Number } tries Number of tries
+ */
+exports.addIamToRoles = async (iamName, roles = ['guest', 'user'], tries = 100) => {
+  const Role = model('Role');
+  const Iam = model('IAM');
+
+  let iam = await Iam.findOne({ iam: iamName });
+  let counter = tries;
+
+  const interval = setInterval(async () => {
+    if (iam) {
+      const { _id: id } = iam;
+      roles.map(async (r) => {
+        try {
+          await Role.findOneAndUpdate({
+            name: r,
+          }, {
+            $addToSet: {
+              iams: id,
+            },
+          });
+        } catch (e) {
+          // Do nothing, just proceed
+        }
+      });
+    }
+
+    if (iam || counter === 0) {
+      clearInterval(interval);
+      return;
+    }
+
+    iam = await Iam.findOne({ iam: iamName });
+    counter -= 1;
+  }, 100);
+};
+
+exports.getIO = () => sockets.io;

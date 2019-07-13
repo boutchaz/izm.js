@@ -1,3 +1,4 @@
+const redisAdapter = require('socket.io-redis');
 const cookieParser = require('cookie-parser');
 const { connection } = require('mongoose');
 const session = require('express-session');
@@ -8,16 +9,28 @@ const MongoStore = require('connect-mongo')(session);
 
 const config = require('..');
 
+let io;
+
+// Define the io property
+Object.defineProperty(exports, 'io', {
+  get: () => io,
+});
+
 // Define the Socket.io configuration method
-module.exports = (server) => {
+exports.init = (server) => {
   // Create a new Socket.io server
-  const io = socketio.listen(server);
+  io = socketio.listen(server);
 
   // Create a MongoDB storage object
   const mongoStore = new MongoStore({
     collection: config.sessionCollection,
     mongooseConnection: connection,
   });
+
+  // Redis adapater
+  if (config.sockets.adapter === 'redis') {
+    io.adapter(redisAdapter(config.sockets.redisOptions));
+  }
 
   // Intercept Socket.io's handshake request
   io.use((socket, next) => {
@@ -44,7 +57,7 @@ module.exports = (server) => {
           passport.session()(socket.request, {}, async () => {
             const { request: req } = socket;
 
-            if (req.user || config.publicSockets) {
+            if (req.user || config.sockets.public) {
               next(null, true);
             } else {
               next(new Error('User is not authenticated'), false);
@@ -55,11 +68,16 @@ module.exports = (server) => {
     });
   });
 
+  config.files.server.socketsConfig.forEach((c) => {
+    // eslint-disable-next-line import/no-dynamic-require,global-require
+    require(resolve(c))(io);
+  });
+
   // Add an event listener to the 'connection' event
   io.on('connection', (socket) => {
-    config.files.server.sockets.forEach((socketConfiguration) => {
+    config.files.server.sockets.forEach((c) => {
       // eslint-disable-next-line import/no-dynamic-require,global-require
-      require(resolve(socketConfiguration))(io, socket);
+      require(resolve(c))(io, socket);
     });
   });
 

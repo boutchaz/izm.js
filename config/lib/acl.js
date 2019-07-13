@@ -20,6 +20,7 @@ const guest = [
  */
 const user = [
   'users:auth:name',
+  'users:auth:signin',
 
   // Users IAMs
   'users:passwd:change',

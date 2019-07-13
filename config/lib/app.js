@@ -9,7 +9,7 @@ const debug = require('debug')('config:lib:app');
 const config = require('..');
 const mongoose = require('./mongoose');
 const express = require('./express');
-const socketIO = require('./socket.io');
+const { init: initSocketIO } = require('./socket.io');
 
 mongoose.loadModels();
 
@@ -30,7 +30,7 @@ module.exports.init = function init(callback) {
  */
 module.exports.configureSocketIO = (app) => {
   // Load the Socket.io configuration
-  const server = socketIO(app);
+  const server = initSocketIO(app);
 
   // Return server object
   return server;
