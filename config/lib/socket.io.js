@@ -41,7 +41,12 @@ exports.init = (server) => {
         ? socket.request.signedCookies[config.sessionKey]
         : false;
 
-      if (!sessionId) return next(new Error('sessionId was not found in socket.request'), false);
+      if (!sessionId) {
+        if (config.sockets.public) {
+          return next(null, true);
+        }
+        return next(new Error('sessionId was not found in socket.request'), false);
+      }
 
       // Use the mongoStorage instance to get the Express session information
       return mongoStore.get(sessionId, (error, sess) => {
