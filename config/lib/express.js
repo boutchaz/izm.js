@@ -25,6 +25,7 @@ const MongoStore = require('connect-mongo')(session);
 const config = require('..');
 
 const logger = require('./logger');
+const { init: initSocketIO } = require('./socket.io');
 
 const { vendor, custom } = config.files.server.modules;
 
@@ -348,5 +349,10 @@ module.exports.init = async (db) => {
   this.initErrorRoutes(app);
 
   // create the server, then return the instance
-  return this.createServer(app);
+  const server = this.createServer(app);
+
+  // Configure Socket.io
+  initSocketIO(server);
+
+  return server;
 };
