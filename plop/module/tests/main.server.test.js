@@ -1,4 +1,3 @@
-/* eslint-env node, mocha */
 /* eslint-disable import/no-dynamic-require */
 const request = require('supertest');
 const { resolve } = require('path');
