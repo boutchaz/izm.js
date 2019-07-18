@@ -77,7 +77,9 @@ exports.createUser = async (
     password: 'jsI$Aw3$0m3',
   },
   iams = ['users:auth:signin'],
-  name = 'role-tests') => {
+  name = 'role-tests',
+  opts = {},
+) => {
   const IAM = model('IAM');
   const User = model('User');
   const Role = model('Role');
@@ -87,14 +89,16 @@ exports.createUser = async (
       $in: iams,
     },
   });
-  if (roleCache[name]) {
+
+  if (roleCache[name] && (!opts || opts.rmRole !== false)) {
     await roleCache[name].remove();
   }
+
   try {
     roleCache[name] = await new Role({
       name,
       iams: list,
-    }).save();
+    }).save({ new: true });
   } catch (e) {
     debug(e);
   }
@@ -113,7 +117,7 @@ exports.createUser = async (
       type: 'email',
       validated: true,
     }],
-  }).save();
+  }).save({ new: true });
 
   return user;
 };
