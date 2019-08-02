@@ -1,7 +1,6 @@
 #! /usr/bin/env node
 
 /* eslint-disable no-console */
-
 const { resolve } = require('path');
 const { spawn } = require('child_process');
 
@@ -17,7 +16,7 @@ const { spawn } = require('child_process');
     [
       'run',
       'test:prefix',
-      `./modules/${process.argv[2]}/tests/*.test.js`,
+      resolve('tests/\\*\\*/\\*.test.js'),
     ],
     {
       shell: true,
