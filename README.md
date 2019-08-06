@@ -8,44 +8,53 @@
 
 ## Getting started
 
+### Using `izm` CLI
+
 ```bash
-git clone git@gitlab.com:fairlink/back.git new-project
-cd new-project
-yarn
-cp .example.env .env/.development.env
-yarn start
+npx izm
+# Then follow the wizard
 ```
 
-Edit the `.env` file to set the correct environment variables.
+### Manual clone
+
+```bash
+git clone git@github.com:midrissi/izm.js.git new-project
+cd new-project
+npm i
+echo "NODE_ENV=development" > .env/.common.env
+cp .example.env .env/.development.env
+npm start
+```
 
 ## Useful Commands
 
-- `yarn start` - starts a dev server
-- `yarn nodemon` - starts the server with [nodemon](https://github.com/remy/nodemon)
-- `yarn test` - runs tests with `mocha`
-- `yarn test:watch` - runs tests in watch mode
-- `yarn watch` - runs eslint and tests in watch mode
-- `yarn generate:module [name]` - generate a new module (Optionnally you can give the name in the command line, otherwise you will be prompted to choose a name.)
+- `npm start` - starts a dev server with [nodemon](https://github.com/remy/nodemon)
+- `npm test` - runs tests with `mocha`
+- `npm run generate:module [name]` - generate a new module (Optionnally you can give the name in the command line, otherwise you will be prompted to choose a name.)
 
 ## VSCode helpers
 
-# iam
+### iam
 
 This shortcut will put a definition of new IAM rules in the file.
 
-# iam:route
+### iam:route
 
 Will generate a new route
 
-# iam:method
+### iam:method
 
 Will generate the definition of a method.
 
-# ctrl
+### ctrl
 
 Create new controller.
 
-## Auto depmloyment
+### module:model
+
+Generate a new mongoose model.
+
+## Auto depmloyment (Gitlab CI)
 
 You need to define these environment variables in your repository:
 
