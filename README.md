@@ -1,4 +1,6 @@
-# NodeJS, Express and MongoDB starter
+## NodeJS, Express and MongoDB starter
+
+[![Introduction video](https://img.youtube.com/vi/gqrCH25qjP8/0.jpg)](https://www.youtube.com/watch?v=gqrCH25qjP8)
 
 ## Table of Content
 
