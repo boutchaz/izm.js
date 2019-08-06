@@ -23,6 +23,18 @@ cd new-project
 npm i
 echo "NODE_ENV=development" > .env/.common.env
 cp .example.env .env/.development.env
+```
+
+Optional: Add `devtools` functional module:
+
+```bash
+git clone git@github.com:midrissi/devtools-fm.git modules/devtools
+npm i
+```
+
+Start the project
+
+```bash
 npm start
 ```
 
